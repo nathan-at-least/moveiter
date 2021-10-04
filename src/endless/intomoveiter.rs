@@ -1,21 +1,21 @@
 use crate::{EndlessIterator, MoveIterator};
 
-/// `MoveIteratorAdapter` wraps any `EndlessIterator` type and provides a `MoveIterator` impl.
+/// `IntoMoveIter` wraps any `EndlessIterator` type and provides a `MoveIterator` impl.
 #[derive(Debug)]
-pub struct MoveIteratorAdapter<EI>(EI)
+pub struct IntoMoveIter<EI>(EI)
 where
     EI: EndlessIterator;
 
-impl<EI> From<EI> for MoveIteratorAdapter<EI>
+impl<EI> From<EI> for IntoMoveIter<EI>
 where
     EI: EndlessIterator,
 {
     fn from(endless: EI) -> Self {
-        MoveIteratorAdapter(endless)
+        IntoMoveIter(endless)
     }
 }
 
-impl<EI> MoveIterator for MoveIteratorAdapter<EI>
+impl<EI> MoveIterator for IntoMoveIter<EI>
 where
     EI: EndlessIterator,
 {
@@ -23,6 +23,6 @@ where
 
     fn into_next_option(self) -> Option<(Self, Self::Item)> {
         let (newstate, item) = self.0.into_next();
-        Some((MoveIteratorAdapter::from(newstate), item))
+        Some((IntoMoveIter::from(newstate), item))
     }
 }

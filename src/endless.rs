@@ -1,7 +1,7 @@
-mod adapter;
+mod intomoveiter;
 
-pub use self::adapter::MoveIteratorAdapter;
-use crate::TerminalIterator;
+pub use self::intomoveiter::IntoMoveIter;
+use crate::{IntoMoveIterator, TerminalIterator};
 
 /// An `EndlessIterator` produces an arbitrary number of `Item`s and never terminates.
 ///
@@ -13,11 +13,13 @@ pub trait EndlessIterator: Sized {
 
     /// The `into_next` method produces a new state of type `Self` and an `Item`.
     fn into_next(self) -> (Self, Self::Item);
+}
 
-    /// Any `EndlessIterator` type can be converted to a `MoveIterator` with this method.
-    fn into_moveiter(self) -> MoveIteratorAdapter<Self> {
-        MoveIteratorAdapter::from(self)
-    }
+pub trait IntoEndlessIterator {
+    type Item;
+    type IntoEndless: EndlessIterator<Item = Self::Item>;
+
+    fn into_endless_iter(self) -> Self::IntoEndless;
 }
 
 /// Any `TerminalIterator` type with a `Terminal` type of `std::convert::Infallible` can never
@@ -31,5 +33,17 @@ where
     fn into_next(self) -> (Self, Self::Item) {
         self.into_next_result()
             .expect("TerminalIterator cannot produce Infallible Terminal.")
+    }
+}
+
+impl<T> IntoMoveIterator for T
+where
+    T: EndlessIterator,
+{
+    type Item = <T as EndlessIterator>::Item;
+    type IntoMoveIter = IntoMoveIter<Self>;
+
+    fn into_move_iter(self) -> IntoMoveIter<Self> {
+        IntoMoveIter::from(self)
     }
 }

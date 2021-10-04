@@ -27,6 +27,13 @@ pub trait MoveIterator: Sized {
     }
 }
 
+pub trait IntoMoveIterator {
+    type Item;
+    type IntoMoveIter: MoveIterator<Item = Self::Item>;
+
+    fn into_move_iter(self) -> Self::IntoMoveIter;
+}
+
 /// Any `std::iter::Iterator` type is automatically a `MoveIterator` because `into_next_option` can
 /// internally mutate the iterator with `next` then return it as the next state.
 impl<I> MoveIterator for I

@@ -21,6 +21,14 @@ pub trait TerminalIterator: Sized {
     fn into_next_result(self) -> Result<(Self, Self::Item), Self::Terminal>;
 }
 
+pub trait IntoTerminalIterator {
+    type Item;
+    type Terminal;
+    type IntoTerminal: TerminalIterator<Item = Self::Item, Terminal = Self::Terminal>;
+
+    fn into_term_iter(self) -> Self::IntoTerminal;
+}
+
 /// Any `MoveIterator` type is also a `TerminalIterator` with `()` as the `Terminal` type. This is
 /// analogous to the isomorphism of `Option<T>` with `Result<T, ()>`.
 impl<T> TerminalIterator for T
