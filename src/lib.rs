@@ -1,7 +1,7 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+mod endless;
+mod moveiter;
+mod terminal;
+
+pub use self::endless::EndlessIterator;
+pub use self::moveiter::MoveIterator;
+pub use self::terminal::TerminalIterator;
