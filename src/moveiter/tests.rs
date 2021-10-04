@@ -1,46 +1,51 @@
 use crate::MoveIterator;
+use test_case::test_case;
 
 #[derive(Debug)]
-struct Countdown(usize);
+struct NToThree(usize);
 
 // Mutation-style impl:
-impl MoveIterator for Countdown {
+impl MoveIterator for NToThree {
     type Item = usize;
 
-    fn into_next_option(self) -> Option<(Countdown, usize)> {
-        if self.0 == 0 {
+    fn into_next_option(self) -> Option<(NToThree, usize)> {
+        if self.0 == 3 {
             None
         } else {
-            let x = self.0 - 1;
-            Some((Countdown(x), x))
+            Some((NToThree(self.0 + 1), self.0))
         }
     }
 }
 
-#[test]
-fn countdown_unrolled_test() {
-    let c = Countdown(3);
-
-    let (s0, x0) = c.into_next_option().unwrap();
-    assert_eq!(2, x0);
+#[test_case(NToThree(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator blanket impl.
+fn zero_to_three_unrolled_test<MI>(mi: MI)
+where
+    MI: MoveIterator<Item = usize>,
+{
+    let (s0, x0) = mi.into_next_option().unwrap();
+    assert_eq!(0, x0);
 
     let (s1, x1) = s0.into_next_option().unwrap();
     assert_eq!(1, x1);
 
     let (s2, x2) = s1.into_next_option().unwrap();
-    assert_eq!(0, x2);
+    assert_eq!(2, x2);
 
     assert!(s2.into_next_option().is_none());
 }
 
-#[test]
-fn countdown_loop_test() {
-    let mut c = Countdown(3);
-    for expected in (0..3).rev() {
-        let (nextc, x) = c.into_next_option().unwrap();
+#[test_case(NToThree(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator blanket impl.
+fn zero_to_three_loop_test<MI>(mut mi: MI)
+where
+    MI: MoveIterator<Item = usize>,
+{
+    for expected in 0..3 {
+        let (nextmi, x) = mi.into_next_option().unwrap();
         assert_eq!(expected, x);
-        c = nextc;
+        mi = nextmi;
     }
 
-    assert!(c.into_next_option().is_none());
+    assert!(mi.into_next_option().is_none());
 }

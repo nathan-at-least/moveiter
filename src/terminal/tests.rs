@@ -1,46 +1,52 @@
 use crate::TerminalIterator;
+use std::fmt::Debug;
+use test_case::test_case;
 
 #[derive(Debug)]
-struct NewyearsCountdown(usize);
+struct MyTermIt(usize);
 
 // Mutation-style impl:
-impl TerminalIterator for NewyearsCountdown {
+impl TerminalIterator for MyTermIt {
     type Item = usize;
-    type Terminal = &'static str;
+    type Terminal = ();
 
-    fn into_next_result(self) -> Result<(NewyearsCountdown, usize), &'static str> {
-        if self.0 == 0 {
-            Err("Happy New Year!")
+    fn into_next_result(self) -> Result<(MyTermIt, usize), ()> {
+        if self.0 == 3 {
+            Err(())
         } else {
-            let x = self.0 - 1;
-            Ok((NewyearsCountdown(x), x))
+            Ok((MyTermIt(self.0 + 1), self.0))
         }
     }
 }
 
-#[test]
-fn newyears_unrolled_test() {
-    let c = NewyearsCountdown(3);
-
-    let (s0, x0) = c.into_next_result().unwrap();
-    assert_eq!(2, x0);
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn unrolled_test<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()> + Debug,
+{
+    let (s0, x0) = ti.into_next_result().unwrap();
+    assert_eq!(0, x0);
 
     let (s1, x1) = s0.into_next_result().unwrap();
     assert_eq!(1, x1);
 
     let (s2, x2) = s1.into_next_result().unwrap();
-    assert_eq!(0, x2);
+    assert_eq!(2, x2);
 
-    assert_eq!("Happy New Year!", s2.into_next_result().unwrap_err());
+    assert_eq!((), s2.into_next_result().unwrap_err());
 }
 
-#[test]
-fn newyears_loop_test() {
-    let mut c = NewyearsCountdown(3);
-    for expected in (0..3).rev() {
-        let (nextc, x) = c.into_next_result().unwrap();
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn newyears_loop_test<TI>(mut ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()> + Debug,
+{
+    for expected in 0..3 {
+        let (nextti, x) = ti.into_next_result().unwrap();
         assert_eq!(expected, x);
-        c = nextc;
+        ti = nextti;
     }
-    assert_eq!("Happy New Year!", c.into_next_result().unwrap_err());
+    assert_eq!((), ti.into_next_result().unwrap_err());
 }
