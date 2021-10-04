@@ -1,9 +1,23 @@
 use crate::MoveIterator;
 
+/// A `TerminalIterator` type produces a sequence of `Item`s and then finally a `Terminal` type.
+///
+/// This is a generalization of `MoveIterator` (and `std::iter::Iterator`) which enables more
+/// expressive termination. For example, a type which performs input with `std::io` can produce
+/// simple `Item` results and terminate with a `std::io::Result<()>` which ensures that any IO
+/// errors terminate iteration.
+///
+/// Any type which is `MoveIterator` is also an instance of `TerminalIterator` with `Terminal =
+/// ()`.
 pub trait TerminalIterator: Sized {
+    /// The type of the elements produced by the iterator:
     type Item;
+
+    /// A `Terminal` value is produced when iteration terminates:
     type Terminal;
 
+    /// The iteration method produces either a next state and item, or a `Terminal` value. Note
+    /// that although this is a `Result`, the `Terminal` value may not represent an error, per-se.
     fn into_next_result(self) -> Result<(Self, Self::Item), Self::Terminal>;
 }
 

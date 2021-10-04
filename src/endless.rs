@@ -3,11 +3,18 @@ mod adapter;
 pub use self::adapter::MoveIteratorAdapter;
 use crate::TerminalIterator;
 
+/// An `EndlessIterator` produces an arbitrary number of `Item`s and never terminates.
+///
+/// Any `EndlessIterator` type can be converted to a `MoveIterator` wrapper type with
+/// `EndlessIterator::into_moveiter`.
 pub trait EndlessIterator: Sized {
+    /// The type of elements produced.
     type Item;
 
+    /// The `into_next` method produces a new state of type `Self` and an `Item`.
     fn into_next(self) -> (Self, Self::Item);
 
+    /// Any `EndlessIterator` type can be converted to a `MoveIterator` with this method.
     fn into_moveiter(self) -> MoveIteratorAdapter<Self> {
         MoveIteratorAdapter::from(self)
     }
