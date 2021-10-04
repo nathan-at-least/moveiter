@@ -1,5 +1,6 @@
 use crate::{EndlessIterator, MoveIterator};
 
+/// `MoveIteratorAdapter` wraps any `EndlessIterator` type and provides a `MoveIterator` impl.
 #[derive(Debug)]
 pub struct MoveIteratorAdapter<EI>(EI)
 where

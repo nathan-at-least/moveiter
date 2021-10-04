@@ -6,7 +6,7 @@ use crate::TerminalIterator;
 /// An `EndlessIterator` produces an arbitrary number of `Item`s and never terminates.
 ///
 /// Any `EndlessIterator` type can be converted to a `MoveIterator` wrapper type with
-/// `EndlessIterator::into_moveiter`.
+/// [`EndlessIterator::into_moveiter`].
 pub trait EndlessIterator: Sized {
     /// The type of elements produced.
     type Item;
@@ -20,6 +20,8 @@ pub trait EndlessIterator: Sized {
     }
 }
 
+/// Any `TerminalIterator` type with a `Terminal` type of `std::convert::Infallible` can never
+/// terminate as guaranteed by the type system, so it is automatically an `EndlessIterator`.
 impl<T> EndlessIterator for T
 where
     T: TerminalIterator<Terminal = std::convert::Infallible>,

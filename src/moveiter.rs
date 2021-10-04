@@ -27,6 +27,8 @@ pub trait MoveIterator: Sized {
     }
 }
 
+/// Any `std::iter::Iterator` type is automatically a `MoveIterator` because `into_next_option` can
+/// internally mutate the iterator with `next` then return it as the next state.
 impl<I> MoveIterator for I
 where
     I: Iterator,

@@ -1,5 +1,7 @@
 use crate::MoveIterator;
 
+/// Any `MoveIterator` type can be wrapped by a `StdIteratorAdapter` to provide
+/// `std::iter::Iterator` support.
 #[derive(Debug)]
 pub struct StdIteratorAdapter<MI>(Option<MI>)
 where
