@@ -1,7 +1,6 @@
 mod adapter;
 
 pub use self::adapter::StdIteratorAdapter;
-use crate::EndlessIterator;
 
 pub trait MoveIterator: Sized {
     type Item;
@@ -13,13 +12,13 @@ pub trait MoveIterator: Sized {
     }
 }
 
-impl<T> MoveIterator for T
+impl<I> MoveIterator for I
 where
-    T: EndlessIterator,
+    I: Iterator,
 {
-    type Item = <Self as EndlessIterator>::Item;
+    type Item = <I as Iterator>::Item;
 
-    fn into_next_option(self) -> Option<(Self, Self::Item)> {
-        Some(self.into_next())
+    fn into_next_option(mut self) -> Option<(Self, Self::Item)> {
+        self.next().map(|item| (self, item))
     }
 }
