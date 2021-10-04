@@ -1,5 +1,8 @@
 mod intomoveiter;
 
+#[cfg(test)]
+mod tests;
+
 pub use self::intomoveiter::IntoMoveIter;
 use crate::{IntoMoveIterator, TerminalIterator};
 

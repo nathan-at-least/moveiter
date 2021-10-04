@@ -1,5 +1,8 @@
 mod adapter;
 
+#[cfg(test)]
+mod tests;
+
 pub use self::adapter::StdIteratorAdapter;
 
 /// The `MoveIterator` trait provides iteration over `Item`s with termination enforced by the type

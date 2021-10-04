@@ -1,5 +1,8 @@
 use crate::MoveIterator;
 
+#[cfg(test)]
+mod tests;
+
 /// A `TerminalIterator` type produces a sequence of `Item`s and then finally a `Terminal` type.
 ///
 /// This is a generalization of `MoveIterator` (and `std::iter::Iterator`) which enables more
