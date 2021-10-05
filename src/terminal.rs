@@ -3,7 +3,7 @@ use crate::MoveIterator;
 #[cfg(test)]
 mod tests;
 
-/// A `TerminalIterator` type produces a sequence of `Item`s and then finally a `Terminal` type.
+/// Types which produces a sequence of `Item`s and then finally a `Terminal` type.
 ///
 /// This is a generalization of `MoveIterator` (and `std::iter::Iterator`) which enables more
 /// expressive termination. For example, a type which performs input with `std::io` can produce
@@ -24,6 +24,7 @@ pub trait TerminalIterator: Sized {
     fn into_next_result(self) -> Result<(Self, Self::Item), Self::Terminal>;
 }
 
+/// Types which convert into a [`TerminalIterator`].
 pub trait IntoTerminalIterator {
     type Item;
     type Terminal;

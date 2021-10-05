@@ -6,10 +6,7 @@ mod tests;
 pub use self::intomoveiter::IntoMoveIter;
 use crate::{IntoMoveIterator, TerminalIterator};
 
-/// An `EndlessIterator` produces an arbitrary number of `Item`s and never terminates.
-///
-/// Any `EndlessIterator` type can be converted to a `MoveIterator` wrapper type with
-/// [`EndlessIterator::into_moveiter`].
+/// Types which produce an arbitrary number of `Item`s and never terminates.
 pub trait EndlessIterator: Sized {
     /// The type of elements produced.
     type Item;
@@ -18,6 +15,7 @@ pub trait EndlessIterator: Sized {
     fn into_next(self) -> (Self, Self::Item);
 }
 
+/// Types which convert into an [`EndlessIterator`].
 pub trait IntoEndlessIterator {
     type Item;
     type IntoEndless: EndlessIterator<Item = Self::Item>;

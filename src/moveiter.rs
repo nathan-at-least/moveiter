@@ -5,16 +5,10 @@ mod tests;
 
 pub use self::adapter::StdIteratorAdapter;
 
-/// The `MoveIterator` trait provides iteration over `Item`s with termination enforced by the type
-/// system.
+/// Types which provide iteration over `Item`s with termination enforced by the type system.
 ///
 /// The `MoveIterator` trait is near-isomorphic to `std::iter::Iterator`, and in fact, any type
 /// `T: Iterator` is also an instance of `MoveIterator`.
-///
-/// While the symmetric correspondence, that any `MoveIterator` should be an `Iterator`, is
-/// logically true but not expressable due to the orphan rule. Instead an adapter wrapper type is
-/// provided to that any `T: MoveIterator` can be converted to this wrapper type which is
-/// `Iterator`.
 pub trait MoveIterator: Sized {
     /// The type of elements produced by the `MoveIterator`.
     type Item;
@@ -30,6 +24,7 @@ pub trait MoveIterator: Sized {
     }
 }
 
+/// Types which convert into a [`MoveIterator`].
 pub trait IntoMoveIterator {
     type Item;
     type IntoMoveIter: MoveIterator<Item = Self::Item>;
