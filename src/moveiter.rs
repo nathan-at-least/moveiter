@@ -22,6 +22,23 @@ pub trait MoveIterator: Sized {
     fn into_iter(self) -> MoveStdIter<Self> {
         MoveStdIter::from(self)
     }
+
+    // std::iter::Iterator-inspired methods:
+    /// Same semantics as the `std::iter::Iterator` method of the same name.
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        (0, None)
+    }
+
+    /// Same semantics as the `std::iter::Iterator` method of the same name.
+    fn count(self) -> usize {
+        let mut state = self;
+        let mut c = 0;
+        while let Some((newstate, _)) = state.into_next_option() {
+            c += 1;
+            state = newstate;
+        }
+        c
+    }
 }
 
 /// Types which convert into a [`MoveIterator`].
@@ -42,5 +59,9 @@ where
 
     fn into_next_option(mut self) -> Option<(Self, Self::Item)> {
         self.next().map(|item| (self, item))
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        <Self as Iterator>::size_hint(self)
     }
 }

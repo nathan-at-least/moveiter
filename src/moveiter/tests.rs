@@ -15,6 +15,10 @@ impl MoveIterator for NToThree {
             Some((NToThree(self.0 + 1), self.0))
         }
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        (3, Some(3))
+    }
 }
 
 #[test_case(NToThree(0))] // Tests hand-coded impl.
@@ -59,4 +63,22 @@ where
     for (expected, actual) in (0..3).zip(mi.into_iter()) {
         assert_eq!(expected, actual);
     }
+}
+
+#[test_case(NToThree(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator blanket impl.
+fn size_hint<MI>(mi: MI)
+where
+    MI: MoveIterator<Item = usize>,
+{
+    assert_eq!((3, Some(3)), mi.size_hint());
+}
+
+#[test_case(NToThree(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator blanket impl.
+fn count<MI>(mi: MI)
+where
+    MI: MoveIterator<Item = usize>,
+{
+    assert_eq!(3, mi.count());
 }
