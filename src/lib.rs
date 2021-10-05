@@ -15,6 +15,6 @@ mod endless;
 mod moveiter;
 mod terminal;
 
-pub use self::endless::{EndlessIterator, IntoEndlessIterator};
-pub use self::moveiter::{IntoMoveIterator, MoveIterator};
+pub use self::endless::{EndlessIterator, EndlessMoveIter, IntoEndlessIterator};
+pub use self::moveiter::{IntoMoveIterator, MoveIterator, MoveStdIter};
 pub use self::terminal::{IntoTerminalIterator, TerminalIterator};

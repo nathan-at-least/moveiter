@@ -1,9 +1,9 @@
-mod adapter;
+mod stditer;
 
 #[cfg(test)]
 mod tests;
 
-pub use self::adapter::StdIteratorAdapter;
+pub use self::stditer::MoveStdIter;
 
 /// Types which provide iteration over `Item`s with termination enforced by the type system.
 ///
@@ -17,10 +17,10 @@ pub trait MoveIterator: Sized {
     /// and the next `Item` element.
     fn into_next_option(self) -> Option<(Self, Self::Item)>;
 
-    /// Any `MoveIter` can be converted into a wrapper type `StdIteratorAdapter` which is an
+    /// Any `MoveIter` can be converted into a wrapper type `MoveStdIter` which is an
     /// `Iterator`, which is useful for integrating to existing `Iterator`-based APIs.
-    fn into_iter(self) -> StdIteratorAdapter<Self> {
-        StdIteratorAdapter::from(self)
+    fn into_iter(self) -> MoveStdIter<Self> {
+        MoveStdIter::from(self)
     }
 }
 

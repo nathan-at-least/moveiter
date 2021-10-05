@@ -3,7 +3,7 @@ mod intomoveiter;
 #[cfg(test)]
 mod tests;
 
-pub use self::intomoveiter::IntoMoveIter;
+pub use self::intomoveiter::EndlessMoveIter;
 use crate::{IntoMoveIterator, TerminalIterator};
 
 /// Types which produce an arbitrary number of `Item`s and never terminates.
@@ -42,9 +42,9 @@ where
     T: EndlessIterator,
 {
     type Item = <T as EndlessIterator>::Item;
-    type IntoMoveIter = IntoMoveIter<Self>;
+    type IntoMoveIter = EndlessMoveIter<Self>;
 
-    fn into_move_iter(self) -> IntoMoveIter<Self> {
-        IntoMoveIter::from(self)
+    fn into_move_iter(self) -> EndlessMoveIter<Self> {
+        EndlessMoveIter::from(self)
     }
 }

@@ -1,22 +1,21 @@
 use crate::MoveIterator;
 
-/// Any `MoveIterator` type can be wrapped by a `StdIteratorAdapter` to provide
-/// `std::iter::Iterator` support.
+/// A wrapper for any [`MoveIterator`] type which provides `std::iter::Iterator`.
 #[derive(Debug)]
-pub struct StdIteratorAdapter<MI>(Option<MI>)
+pub struct MoveStdIter<MI>(Option<MI>)
 where
     MI: MoveIterator;
 
-impl<MI> From<MI> for StdIteratorAdapter<MI>
+impl<MI> From<MI> for MoveStdIter<MI>
 where
     MI: MoveIterator,
 {
     fn from(mi: MI) -> Self {
-        StdIteratorAdapter(Some(mi))
+        MoveStdIter(Some(mi))
     }
 }
 
-impl<MI> Iterator for StdIteratorAdapter<MI>
+impl<MI> Iterator for MoveStdIter<MI>
 where
     MI: MoveIterator,
 {
