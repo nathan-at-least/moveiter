@@ -1,5 +1,5 @@
 [package]
-name = "iterfam"
+name = "moveiter"
 version = "0.1.0"
 authors = ["Nate Wilcox <nathan+dev@electriccoin.co>"]
 edition = "2018"
