@@ -49,3 +49,14 @@ where
 
     assert!(mi.into_next_option().is_none());
 }
+
+#[test_case(NToThree(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator blanket impl.
+fn into_iter_test_loop<MI>(mi: MI)
+where
+    MI: MoveIterator<Item = usize>,
+{
+    for (expected, actual) in (0..3).zip(mi.into_iter()) {
+        assert_eq!(expected, actual);
+    }
+}
