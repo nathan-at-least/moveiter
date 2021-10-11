@@ -1,7 +1,11 @@
+mod chain;
+mod mapterm;
 mod stepby;
 
 use crate::MoveIterator;
 
+pub use self::chain::Chain;
+pub use self::mapterm::MapTerm;
 pub use self::stepby::StepBy;
 
 #[cfg(test)]
@@ -67,6 +71,13 @@ pub trait TerminalIterator: Sized {
         (term, item)
     }
 
+    fn map_term<F, U>(self, f: F) -> MapTerm<Self, F, U>
+    where
+        F: FnOnce(Self::Terminal) -> U,
+    {
+        MapTerm::new(self, f)
+    }
+
     // std::iter::Iterator-inspired methods:
     /// Same semantics as the `std::iter::Iterator` method of the same name.
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -101,15 +112,15 @@ pub trait TerminalIterator: Sized {
         StepBy::new(self, step)
     }
 
+    fn chain<U>(self, other: U) -> Chain<Self, <U as IntoTerminalIterator>::IntoTerminal>
+    where
+        U: IntoTerminalIterator<Item = Self::Item>,
+    {
+        Chain::new(self, other.into_term_iter())
+    }
+
     /*
 
-        pub fn chain<U>(
-            self,
-            other: U
-        ) -> Chain<Self, <U as IntoIterator>::IntoIter>ⓘ
-        where
-            U: IntoIterator<Item = Self::Item>,
-        { ... }
         pub fn zip<U>(self, other: U) -> Zip<Self, <U as IntoIterator>::IntoIter>ⓘ
         where
             U: IntoIterator,
@@ -386,6 +397,19 @@ pub trait IntoTerminalIterator {
     fn into_term_iter(self) -> Self::IntoTerminal;
 }
 
+impl<T> IntoTerminalIterator for T
+where
+    T: TerminalIterator,
+{
+    type Item = <T as TerminalIterator>::Item;
+    type Terminal = <T as TerminalIterator>::Terminal;
+    type IntoTerminal = T;
+
+    fn into_term_iter(self) -> Self::IntoTerminal {
+        self
+    }
+}
+
 /// Any `MoveIterator` type is also a `TerminalIterator` with `()` as the `Terminal` type. This is
 /// analogous to the isomorphism of `Option<T>` with `Result<T, ()>`.
 impl<T> TerminalIterator for T
@@ -401,18 +425,5 @@ where
 
     fn size_hint(&self) -> (usize, Option<usize>) {
         <Self as MoveIterator>::size_hint(self)
-    }
-}
-
-impl<T> IntoTerminalIterator for T
-where
-    T: IntoIterator,
-{
-    type Item = <Self as IntoIterator>::Item;
-    type Terminal = ();
-    type IntoTerminal = <Self as IntoIterator>::IntoIter;
-
-    fn into_term_iter(self) -> Self::IntoTerminal {
-        self.into_iter()
     }
 }

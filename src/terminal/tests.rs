@@ -127,17 +127,23 @@ where
     assert!(res.is_err());
 }
 
-#[test]
-fn into_term_iter() {
-    use crate::IntoTerminalIterator;
-
-    let ti = (0..5).into_term_iter();
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn chain_and_map_term<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()> + Debug,
+{
+    let termed = ti.map_term(|()| 42);
+    let other = (3..5).map_term(|()| "foo");
+    let chained = termed.chain(other);
 
     let mut sum = 0;
-    let () = TerminalIterator::for_each(ti, |x| {
+    let (ta, tb) = chained.for_each(|x| {
         sum += x;
         None
     });
 
+    assert_eq!(ta, 42);
+    assert_eq!(tb, "foo");
     assert_eq!(sum, 10);
 }
