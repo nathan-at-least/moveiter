@@ -81,3 +81,30 @@ where
 {
     assert_eq!(Some(2), ti.last());
 }
+
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn nth_0<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()> + Debug,
+{
+    assert_eq!(Ok(0), ti.nth(0).map(|(_, x)| x));
+}
+
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn nth_2<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()> + Debug,
+{
+    assert_eq!(Ok(2), ti.nth(2).map(|(_, x)| x));
+}
+
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn nth_42<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()> + Debug,
+{
+    assert_eq!(Err(()), ti.nth(42).map(|(_, x)| x));
+}

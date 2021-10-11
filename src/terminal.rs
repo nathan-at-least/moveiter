@@ -79,6 +79,19 @@ pub trait TerminalIterator: Sized {
         let (_, x) = self.terminal_and_last();
         x
     }
+
+    fn nth(self, n: usize) -> Result<(Self, Self::Item), Self::Terminal> {
+        self.skip(n)?.into_next_result()
+    }
+
+    fn skip(self, n: usize) -> Result<Self, Self::Terminal> {
+        let mut state = self;
+        for _ in 0..n {
+            let (nextstate, _) = state.into_next_result()?;
+            state = nextstate;
+        }
+        Ok(state)
+    }
 }
 
 /// Types which convert into a [`TerminalIterator`].
