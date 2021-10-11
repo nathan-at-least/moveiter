@@ -129,7 +129,7 @@ where
 
 #[test_case(MyTermIt(0))] // Tests hand-coded impl.
 #[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
-fn chain_and_map_term<TI>(ti: TI)
+fn map_term_and_chain<TI>(ti: TI)
 where
     TI: TerminalIterator<Item = usize, Terminal = ()> + Debug,
 {
@@ -146,4 +146,64 @@ where
     assert_eq!(ta, 42);
     assert_eq!(tb, "foo");
     assert_eq!(sum, 10);
+}
+
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn map_term_and_zip_complete<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()> + Debug,
+{
+    let termed = ti.map_term(|()| 42);
+    let other = (10..20).map_term(|()| "foo");
+    let zipped = termed.zip(other);
+
+    let mut sum = 0;
+    let zipterm = zipped.for_each(|(a, b)| {
+        sum += a * b;
+        None
+    });
+    let (ta, tb) = zipterm.complete();
+
+    assert_eq!(ta, 42);
+    assert_eq!(tb, "foo");
+    assert_eq!(sum, 0 * 10 + 1 * 11 + 2 * 12);
+}
+
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn map_term_and_zip_then_continue<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()> + Debug,
+{
+    use crate::terminal::ZipTerminal::LeftTerm;
+
+    let termed = ti.map_term(|()| 42);
+    let other = (10..16).map_term(|()| "foo");
+    let zipped = termed.zip(other);
+
+    let mut sum = 0;
+    let zipterm = zipped.for_each(|(a, b)| {
+        sum += a * b;
+        None
+    });
+    assert_eq!(sum, 0 * 10 + 1 * 11 + 2 * 12);
+
+    match zipterm {
+        LeftTerm(aterm, (bstate, bitem)) => {
+            assert_eq!(aterm, 42);
+            assert_eq!(bitem, 13);
+
+            let mut sum2 = 0;
+            let bterm = bstate.for_each(|x| {
+                sum2 += x;
+                None
+            });
+            assert_eq!(sum2, 14 + 15);
+            assert_eq!(bterm, "foo");
+        }
+        _ => {
+            panic!("zipped terminated incorrectly.");
+        }
+    }
 }

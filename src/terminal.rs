@@ -1,12 +1,14 @@
 mod chain;
 mod mapterm;
 mod stepby;
+mod zip;
 
 use crate::MoveIterator;
 
 pub use self::chain::Chain;
 pub use self::mapterm::MapTerm;
 pub use self::stepby::StepBy;
+pub use self::zip::{Zip, ZipTerminal};
 
 #[cfg(test)]
 mod tests;
@@ -51,6 +53,12 @@ pub trait TerminalIterator: Sized {
                 }
             }
         }
+    }
+
+    /// Discard all remaining elements and return the terminal.
+    fn terminate(self) -> Self::Terminal {
+        let (term, _) = self.terminal_and_last();
+        term
     }
 
     fn terminal_and_count(self) -> (Self::Terminal, usize) {
@@ -119,12 +127,15 @@ pub trait TerminalIterator: Sized {
         Chain::new(self, other.into_term_iter())
     }
 
+    fn zip<U>(self, other: U) -> Zip<Self, <U as IntoTerminalIterator>::IntoTerminal>
+    where
+        U: IntoTerminalIterator,
+    {
+        Zip::new(self, other.into_term_iter())
+    }
+
     /*
 
-        pub fn zip<U>(self, other: U) -> Zip<Self, <U as IntoIterator>::IntoIter>ⓘ
-        where
-            U: IntoIterator,
-        { ... }
         pub fn intersperse(self, separator: Self::Item) -> Intersperse<Self>ⓘ
         where
             Self::Item: Clone,
