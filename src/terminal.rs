@@ -22,6 +22,44 @@ pub trait TerminalIterator: Sized {
     /// The iteration method produces either a next state and item, or a `Terminal` value. Note
     /// that although this is a `Result`, the `Terminal` value may not represent an error, per-se.
     fn into_next_result(self) -> Result<(Self, Self::Item), Self::Terminal>;
+
+    /// Call `f` on each item, returning the terminal value. Either `f` provides a terminal value,
+    /// which is similar to breaking a for-loop, or `Self` does.
+    fn for_each<F>(self, mut f: F) -> Self::Terminal
+    where
+        F: FnMut(Self::Item) -> Option<Self::Terminal>,
+    {
+        let mut state = self;
+        loop {
+            match state.into_next_result() {
+                Ok((newstate, item)) => {
+                    state = newstate;
+                    if let Some(term) = f(item) {
+                        return term;
+                    }
+                }
+                Err(term) => {
+                    return term;
+                }
+            }
+        }
+    }
+
+    // std::iter::Iterator-inspired methods:
+    /// Same semantics as the `std::iter::Iterator` method of the same name.
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        (0, None)
+    }
+
+    /// Same semantics as the `std::iter::Iterator` method of the same name.
+    fn count(self) -> usize {
+        let mut c = 0;
+        self.for_each(|_| {
+            c += 1;
+            None
+        });
+        c
+    }
 }
 
 /// Types which convert into a [`TerminalIterator`].
@@ -44,5 +82,9 @@ where
 
     fn into_next_result(self) -> Result<(Self, Self::Item), ()> {
         self.into_next_option().ok_or(())
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        <Self as MoveIterator>::size_hint(self)
     }
 }
