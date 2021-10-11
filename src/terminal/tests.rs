@@ -108,3 +108,21 @@ where
 {
     assert_eq!(Err(()), ti.nth(42).map(|(_, x)| x));
 }
+
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn step_by_2<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()> + Debug,
+{
+    let sb2 = ti.step_by(2);
+
+    let (s0, x0) = sb2.into_next_result().unwrap();
+    assert_eq!(x0, 0);
+
+    let (s1, x1) = s0.into_next_result().unwrap();
+    assert_eq!(x1, 2);
+
+    let res = s1.into_next_result();
+    assert!(res.is_err());
+}
