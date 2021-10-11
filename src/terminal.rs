@@ -403,3 +403,16 @@ where
         <Self as MoveIterator>::size_hint(self)
     }
 }
+
+impl<T> IntoTerminalIterator for T
+where
+    T: IntoIterator,
+{
+    type Item = <Self as IntoIterator>::Item;
+    type Terminal = ();
+    type IntoTerminal = <Self as IntoIterator>::IntoIter;
+
+    fn into_term_iter(self) -> Self::IntoTerminal {
+        self.into_iter()
+    }
+}

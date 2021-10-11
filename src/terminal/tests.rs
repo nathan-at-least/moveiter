@@ -126,3 +126,18 @@ where
     let res = s1.into_next_result();
     assert!(res.is_err());
 }
+
+#[test]
+fn into_term_iter() {
+    use crate::IntoTerminalIterator;
+
+    let ti = (0..5).into_term_iter();
+
+    let mut sum = 0;
+    let () = TerminalIterator::for_each(ti, |x| {
+        sum += x;
+        None
+    });
+
+    assert_eq!(sum, 10);
+}
