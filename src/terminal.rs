@@ -45,6 +45,15 @@ pub trait TerminalIterator: Sized {
         }
     }
 
+    fn count_and_terminal(self) -> (usize, Self::Terminal) {
+        let mut c = 0;
+        let term = self.for_each(|_| {
+            c += 1;
+            None
+        });
+        (c, term)
+    }
+
     // std::iter::Iterator-inspired methods:
     /// Same semantics as the `std::iter::Iterator` method of the same name.
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -53,11 +62,7 @@ pub trait TerminalIterator: Sized {
 
     /// Same semantics as the `std::iter::Iterator` method of the same name.
     fn count(self) -> usize {
-        let mut c = 0;
-        self.for_each(|_| {
-            c += 1;
-            None
-        });
+        let (c, _) = self.count_and_terminal();
         c
     }
 }
