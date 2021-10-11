@@ -45,13 +45,22 @@ pub trait TerminalIterator: Sized {
         }
     }
 
-    fn count_and_terminal(self) -> (usize, Self::Terminal) {
+    fn terminal_and_count(self) -> (Self::Terminal, usize) {
         let mut c = 0;
         let term = self.for_each(|_| {
             c += 1;
             None
         });
-        (c, term)
+        (term, c)
+    }
+
+    fn terminal_and_last(self) -> (Self::Terminal, Option<Self::Item>) {
+        let mut item = None;
+        let term = self.for_each(|x| {
+            item = Some(x);
+            None
+        });
+        (term, item)
     }
 
     // std::iter::Iterator-inspired methods:
@@ -62,8 +71,13 @@ pub trait TerminalIterator: Sized {
 
     /// Same semantics as the `std::iter::Iterator` method of the same name.
     fn count(self) -> usize {
-        let (c, _) = self.count_and_terminal();
+        let (_, c) = self.terminal_and_count();
         c
+    }
+
+    fn last(self) -> Option<Self::Item> {
+        let (_, x) = self.terminal_and_last();
+        x
     }
 }
 

@@ -57,18 +57,27 @@ where
 
 #[test_case(MyTermIt(0))] // Tests hand-coded impl.
 #[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
-fn size_hint<TI>(mi: TI)
+fn size_hint<TI>(ti: TI)
 where
     TI: TerminalIterator<Item = usize, Terminal = ()>,
 {
-    assert_eq!((3, Some(3)), mi.size_hint());
+    assert_eq!((3, Some(3)), ti.size_hint());
 }
 
 #[test_case(MyTermIt(0))] // Tests hand-coded impl.
 #[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
-fn count<TI>(mi: TI)
+fn count<TI>(ti: TI)
 where
     TI: TerminalIterator<Item = usize, Terminal = ()>,
 {
-    assert_eq!(3, mi.count());
+    assert_eq!(3, ti.count());
+}
+
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn last<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()>,
+{
+    assert_eq!(Some(2), ti.last());
 }
