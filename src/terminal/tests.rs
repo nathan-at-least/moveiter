@@ -240,3 +240,26 @@ where
         _ => panic!("Expected termination."),
     }
 }
+
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn filter_map<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()>,
+{
+    let mapped = ti.filter_map(|x| {
+        if x % 2 == 0 {
+            None
+        } else {
+            Some(x.to_string())
+        }
+    });
+
+    let (t0, x0) = mapped.into_next_result().unwrap();
+    assert_eq!(&x0, "1");
+
+    match t0.into_next_result() {
+        Err(()) => {}
+        _ => panic!("Expected termination."),
+    }
+}
