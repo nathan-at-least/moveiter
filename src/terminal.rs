@@ -37,28 +37,6 @@ pub trait TerminalIterator: Sized {
     /// that although this is a `Result`, the `Terminal` value may not represent an error, per-se.
     fn into_next_result(self) -> Result<(Self, Self::Item), Self::Terminal>;
 
-    /// Call `f` on each item, returning the terminal value. Either `f` provides a terminal value,
-    /// which is similar to breaking a for-loop, or `Self` does.
-    fn for_each<F>(self, mut f: F) -> Self::Terminal
-    where
-        F: FnMut(Self::Item) -> Option<Self::Terminal>,
-    {
-        let mut state = self;
-        loop {
-            match state.into_next_result() {
-                Ok((newstate, item)) => {
-                    state = newstate;
-                    if let Some(term) = f(item) {
-                        return term;
-                    }
-                }
-                Err(term) => {
-                    return term;
-                }
-            }
-        }
-    }
-
     /// Discard all remaining elements and return the terminal.
     fn terminate(self) -> Self::Terminal {
         let (term, _) = self.terminal_and_last();
@@ -152,15 +130,33 @@ pub trait TerminalIterator: Sized {
         Map::new(self, f)
     }
 
+    /// Call `f` on each item, returning the terminal value. Either `f` provides a terminal value,
+    /// which is similar to breaking a for-loop, or `Self` does.
+    fn for_each<F>(self, mut f: F) -> Self::Terminal
+    where
+        F: FnMut(Self::Item) -> Option<Self::Terminal>,
+    {
+        let mut state = self;
+        loop {
+            match state.into_next_result() {
+                Ok((newstate, item)) => {
+                    state = newstate;
+                    if let Some(term) = f(item) {
+                        return term;
+                    }
+                }
+                Err(term) => {
+                    return term;
+                }
+            }
+        }
+    }
+
     /*
 
         pub fn intersperse_with<G>(self, separator: G) -> IntersperseWith<Self, G>ⓘ
         where
             G: FnMut() -> Self::Item,
-        { ... }
-        pub fn for_each<F>(self, f: F)
-        where
-            F: FnMut(Self::Item),
         { ... }
         pub fn filter<P>(self, predicate: P) -> Filter<Self, P>ⓘ
         where
