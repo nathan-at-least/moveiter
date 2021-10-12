@@ -1,4 +1,5 @@
 mod chain;
+mod intersperse;
 mod mapterm;
 mod stepby;
 mod zip;
@@ -6,6 +7,7 @@ mod zip;
 use crate::MoveIterator;
 
 pub use self::chain::Chain;
+pub use self::intersperse::Intersperse;
 pub use self::mapterm::MapTerm;
 pub use self::stepby::StepBy;
 pub use self::zip::{Zip, ZipTerminal};
@@ -134,12 +136,15 @@ pub trait TerminalIterator: Sized {
         Zip::new(self, other.into_term_iter())
     }
 
+    fn intersperse(self, separator: Self::Item) -> Intersperse<Self>
+    where
+        Self::Item: Clone,
+    {
+        Intersperse::new(self, separator)
+    }
+
     /*
 
-        pub fn intersperse(self, separator: Self::Item) -> Intersperse<Self>ⓘ
-        where
-            Self::Item: Clone,
-        { ... }
         pub fn intersperse_with<G>(self, separator: G) -> IntersperseWith<Self, G>ⓘ
         where
             G: FnMut() -> Self::Item,

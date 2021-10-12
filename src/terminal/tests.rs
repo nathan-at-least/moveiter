@@ -207,3 +207,13 @@ where
         }
     }
 }
+
+#[test]
+fn intersperse() {
+    let mut sum = 0;
+    MyTermIt(0).intersperse(5).for_each(|x| {
+        sum += x;
+        None
+    });
+    assert_eq!(sum, 13);
+}
