@@ -217,3 +217,26 @@ fn intersperse() {
     });
     assert_eq!(sum, 13);
 }
+
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn map<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()>,
+{
+    let mapped = ti.map(|x| x.to_string());
+
+    let (t0, x0) = mapped.into_next_result().unwrap();
+    assert_eq!(&x0, "0");
+
+    let (t1, x1) = t0.into_next_result().unwrap();
+    assert_eq!(&x1, "1");
+
+    let (t2, x2) = t1.into_next_result().unwrap();
+    assert_eq!(&x2, "2");
+
+    match t2.into_next_result() {
+        Err(()) => {}
+        _ => panic!("Expected termination."),
+    }
+}
