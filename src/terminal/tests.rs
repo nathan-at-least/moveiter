@@ -279,3 +279,30 @@ where
 
     assert_eq!((), term);
 }
+
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn peekable<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()>,
+{
+    let p = ti.peekable();
+
+    assert_eq!(Some(&0), p.peek());
+    let (t0, x0) = p.into_next_result().unwrap();
+    assert_eq!(x0, 0);
+
+    assert_eq!(Some(&1), t0.peek());
+    let (t1, x1) = t0.into_next_result().unwrap();
+    assert_eq!(x1, 1);
+
+    assert_eq!(Some(&2), t1.peek());
+    let (t2, x2) = t1.into_next_result().unwrap();
+    assert_eq!(x2, 2);
+
+    assert_eq!(None, t2.peek());
+    match t2.into_next_result() {
+        Err(()) => {}
+        _ => panic!("Expected termination."),
+    }
+}

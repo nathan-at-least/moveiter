@@ -4,6 +4,7 @@ mod filtermap;
 mod intersperse;
 mod map;
 mod mapterm;
+mod peekable;
 mod stepby;
 mod zip;
 
@@ -15,6 +16,7 @@ pub use self::filtermap::FilterMap;
 pub use self::intersperse::Intersperse;
 pub use self::map::Map;
 pub use self::mapterm::MapTerm;
+pub use self::peekable::Peekable;
 pub use self::stepby::StepBy;
 pub use self::zip::{Zip, ZipTerminal};
 
@@ -167,8 +169,11 @@ pub trait TerminalIterator: Sized {
         Enumerate::new(self)
     }
 
-    /*
+    fn peekable(self) -> Peekable<Self> {
+        Peekable::new(self)
+    }
 
+    /*
         pub fn intersperse_with<G>(self, separator: G) -> IntersperseWith<Self, G>ⓘ
         where
             G: FnMut() -> Self::Item,
@@ -177,7 +182,6 @@ pub trait TerminalIterator: Sized {
         where
             P: FnMut(&Self::Item) -> bool,
         { ... }
-        pub fn peekable(self) -> Peekable<Self>ⓘ { ... }
         pub fn skip_while<P>(self, predicate: P) -> SkipWhile<Self, P>ⓘ
         where
             P: FnMut(&Self::Item) -> bool,
