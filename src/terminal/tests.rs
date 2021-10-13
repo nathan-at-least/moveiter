@@ -243,6 +243,23 @@ where
 
 #[test_case(MyTermIt(0))] // Tests hand-coded impl.
 #[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn filter<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()>,
+{
+    let mapped = ti.filter(|&x| x % 2 == 1);
+
+    let (t0, x0) = mapped.into_next_result().unwrap();
+    assert_eq!(x0, 1);
+
+    match t0.into_next_result() {
+        Err(()) => {}
+        _ => panic!("Expected termination."),
+    }
+}
+
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
 fn filter_map<TI>(ti: TI)
 where
     TI: TerminalIterator<Item = usize, Terminal = ()>,

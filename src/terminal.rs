@@ -1,5 +1,6 @@
 mod chain;
 mod enumerate;
+mod filter;
 mod filtermap;
 mod intersperse;
 mod map;
@@ -12,6 +13,7 @@ use crate::MoveIterator;
 
 pub use self::chain::Chain;
 pub use self::enumerate::Enumerate;
+pub use self::filter::Filter;
 pub use self::filtermap::FilterMap;
 pub use self::intersperse::Intersperse;
 pub use self::map::Map;
@@ -158,6 +160,13 @@ pub trait TerminalIterator: Sized {
         }
     }
 
+    fn filter<P>(self, predicate: P) -> Filter<Self, P>
+    where
+        P: FnMut(&Self::Item) -> bool,
+    {
+        Filter::new(self, predicate)
+    }
+
     fn filter_map<F, U>(self, f: F) -> FilterMap<Self, F, U>
     where
         F: Fn(Self::Item) -> Option<U>,
@@ -174,14 +183,6 @@ pub trait TerminalIterator: Sized {
     }
 
     /*
-        pub fn intersperse_with<G>(self, separator: G) -> IntersperseWith<Self, G>ⓘ
-        where
-            G: FnMut() -> Self::Item,
-        { ... }
-        pub fn filter<P>(self, predicate: P) -> Filter<Self, P>ⓘ
-        where
-            P: FnMut(&Self::Item) -> bool,
-        { ... }
         pub fn skip_while<P>(self, predicate: P) -> SkipWhile<Self, P>ⓘ
         where
             P: FnMut(&Self::Item) -> bool,
