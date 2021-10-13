@@ -263,3 +263,19 @@ where
         _ => panic!("Expected termination."),
     }
 }
+
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn enumerate<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()>,
+{
+    let eti = ti.enumerate();
+
+    let term = eti.for_each(|(idx, elem)| {
+        assert_eq!(idx, elem);
+        None
+    });
+
+    assert_eq!((), term);
+}
