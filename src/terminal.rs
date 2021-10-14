@@ -6,6 +6,7 @@ mod intersperse;
 mod map;
 mod mapterm;
 mod peekable;
+mod skipwhile;
 mod stepby;
 mod zip;
 
@@ -19,6 +20,7 @@ pub use self::intersperse::Intersperse;
 pub use self::map::Map;
 pub use self::mapterm::MapTerm;
 pub use self::peekable::Peekable;
+pub use self::skipwhile::SkipWhile;
 pub use self::stepby::StepBy;
 pub use self::zip::{Zip, ZipTerminal};
 
@@ -44,6 +46,28 @@ pub trait TerminalIterator: Sized {
     /// The iteration method produces either a next state and item, or a `Terminal` value. Note
     /// that although this is a `Result`, the `Terminal` value may not represent an error, per-se.
     fn into_next_result(self) -> Result<(Self, Self::Item), Self::Terminal>;
+
+    fn map_state<F, T>(self, f: F) -> Result<(T, Self::Item), Self::Terminal>
+    where
+        F: FnOnce(Self) -> T,
+    {
+        let (s, x) = self.into_next_result()?;
+        Ok((f(s), x))
+    }
+
+    fn scan_state<F, T>(self, mut f: F) -> Result<(Self, T), Self::Terminal>
+    where
+        F: FnMut(Self::Item) -> Option<Result<T, Self::Terminal>>,
+    {
+        let mut state = self;
+        loop {
+            let (newstate, x) = state.into_next_result()?;
+            if let Some(res) = f(x) {
+                return res.map(|t| (newstate, t));
+            }
+            state = newstate;
+        }
+    }
 
     /// Discard all remaining elements and return the terminal.
     fn terminate(self) -> Self::Terminal {
@@ -182,11 +206,14 @@ pub trait TerminalIterator: Sized {
         Peekable::new(self)
     }
 
+    fn skip_while<P>(self, predicate: P) -> SkipWhile<Self, P>
+    where
+        P: FnMut(&Self::Item) -> bool,
+    {
+        SkipWhile::new(self, predicate)
+    }
+
     /*
-        pub fn skip_while<P>(self, predicate: P) -> SkipWhile<Self, P>ⓘ
-        where
-            P: FnMut(&Self::Item) -> bool,
-        { ... }
         pub fn take_while<P>(self, predicate: P) -> TakeWhile<Self, P>ⓘ
         where
             P: FnMut(&Self::Item) -> bool,
