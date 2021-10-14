@@ -8,6 +8,7 @@ mod mapterm;
 mod peekable;
 mod skipwhile;
 mod stepby;
+mod takewhile;
 mod zip;
 
 use crate::MoveIterator;
@@ -22,6 +23,7 @@ pub use self::mapterm::MapTerm;
 pub use self::peekable::Peekable;
 pub use self::skipwhile::SkipWhile;
 pub use self::stepby::StepBy;
+pub use self::takewhile::TakeWhile;
 pub use self::zip::{Zip, ZipTerminal};
 
 #[cfg(test)]
@@ -213,11 +215,14 @@ pub trait TerminalIterator: Sized {
         SkipWhile::new(self, predicate)
     }
 
+    fn take_while<P>(self, predicate: P) -> TakeWhile<Self, P>
+    where
+        P: FnMut(&Self::Item) -> bool,
+    {
+        TakeWhile::new(self, predicate)
+    }
+
     /*
-        pub fn take_while<P>(self, predicate: P) -> TakeWhile<Self, P>ⓘ
-        where
-            P: FnMut(&Self::Item) -> bool,
-        { ... }
         pub fn map_while<B, P>(self, predicate: P) -> MapWhile<Self, P>ⓘ
         where
             P: FnMut(Self::Item) -> Option<B>,

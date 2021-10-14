@@ -337,3 +337,20 @@ where
 
     assert!(t0.into_next_result().is_err());
 }
+
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+fn take_while<TI>(ti: TI)
+where
+    TI: TerminalIterator<Item = usize, Terminal = ()>,
+{
+    let tw = ti.take_while(|&x| x < 2);
+
+    let (t0, x0) = tw.into_next_result().unwrap();
+    assert_eq!(x0, 0);
+
+    let (t1, x1) = t0.into_next_result().unwrap();
+    assert_eq!(x1, 1);
+
+    assert!(t1.into_next_result().is_err());
+}
