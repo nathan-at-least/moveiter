@@ -25,10 +25,9 @@ where
     type Terminal = <T as TerminalIterator>::Terminal;
 
     fn into_next_result(self) -> Result<(Self, Self::Item), Self::Terminal> {
-        let (t, x) = self.t.into_next_result()?;
-        let item = (self.ix, x);
-        let ix = self.ix + 1;
-        let nextself = Enumerate { t, ix };
-        Ok((nextself, item))
+        let ix = self.ix;
+        self.t
+            .map_state(|t| Enumerate { t, ix: ix + 1 })
+            .map(|(s, x)| (s, (ix, x)))
     }
 }

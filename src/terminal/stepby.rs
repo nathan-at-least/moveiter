@@ -30,16 +30,15 @@ where
     type Terminal = <T as TerminalIterator>::Terminal;
 
     fn into_next_result(self) -> Result<(Self, Self::Item), Self::Terminal> {
-        let mut state = self.ti;
-        if self.nextstep > 0 {
-            state = state.skip(self.nextstep - 1)?;
+        let StepBy { ti, step, nextstep } = self;
+        let mut state = ti;
+        if nextstep > 0 {
+            state = state.skip(nextstep - 1)?;
         }
-        let (state, item) = state.into_next_result()?;
-        let nextself = StepBy {
-            ti: state,
-            step: self.step,
-            nextstep: self.step,
-        };
-        Ok((nextself, item))
+        state.map_state(|ti| StepBy {
+            ti,
+            step,
+            nextstep: step,
+        })
     }
 }
