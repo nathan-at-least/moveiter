@@ -1,3 +1,7 @@
+mod blankets;
+
+pub use self::blankets::TerminalIteration;
+
 use std::future::Future;
 
 pub trait AsyncTerminalIterator: Sized {
