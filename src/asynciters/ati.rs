@@ -1,6 +1,11 @@
 mod blankets;
+mod futati;
 
+// For blanket impl of AsyncTerminalIterator for every TerminalIterator:
 pub use self::blankets::TerminalIteration;
+
+// For blanket impl of IntoAsyncTerminalIterator for every Future:
+pub use self::futati::{FutureAsyncTerminalIterator, FutureIteration};
 
 use std::future::Future;
 
