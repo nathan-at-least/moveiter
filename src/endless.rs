@@ -1,3 +1,4 @@
+//! An Iterator with move semantics that never terminates.
 mod intoterm;
 
 #[cfg(test)]

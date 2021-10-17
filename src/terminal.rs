@@ -1,3 +1,4 @@
+//! An Iterator which terminates without any associated value.
 mod stditer;
 
 #[cfg(test)]

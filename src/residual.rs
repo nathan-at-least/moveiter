@@ -1,3 +1,4 @@
+//! An Iterator which produces a value with termination.
 use crate::terminal;
 
 #[cfg(test)]
