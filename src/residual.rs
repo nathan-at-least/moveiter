@@ -1,8 +1,12 @@
 //! An Iterator which produces a value with termination.
 use crate::terminal;
 
+mod iteration;
+
 #[cfg(test)]
 mod tests;
+
+pub use self::iteration::{Iteration, Next, Residual};
 
 /// Types which produces a sequence of `Item`s and then finally a `Residual` type.
 ///
@@ -22,7 +26,7 @@ pub trait Iterator: Sized {
 
     /// The iteration method produces either a next state and item, or a `Residual` value. Note
     /// that although this is a `Result`, the `Residual` value may not represent an error, per-se.
-    fn into_next_result(self) -> Result<(Self, Self::Item), Self::Residual>;
+    fn into_next(self) -> Iteration<Self, Self::Item, Self::Residual>;
 }
 
 /// Types which convert into a [`Iterator`].
@@ -43,7 +47,10 @@ where
     type Item = <Self as terminal::Iterator>::Item;
     type Residual = ();
 
-    fn into_next_result(self) -> Result<(Self, Self::Item), ()> {
-        self.into_next_option().ok_or(())
+    fn into_next(self) -> Iteration<Self, Self::Item, ()> {
+        match self.into_next_option() {
+            None => Residual(()),
+            Some((s, x)) => Next(s, x),
+        }
     }
 }

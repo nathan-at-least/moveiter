@@ -33,8 +33,10 @@ where
     type Item = <Self as residual::Iterator>::Item;
 
     fn into_next(self) -> (Self, Self::Item) {
-        self.into_next_result()
-            .expect("residual::Iterator cannot produce Infallible Residual.")
+        match <Self as residual::Iterator>::into_next(self) {
+            residual::Next(s, x) => (s, x),
+            _ => unreachable!("Residual is Infallable"),
+        }
     }
 }
 

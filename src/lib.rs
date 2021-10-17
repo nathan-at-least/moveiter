@@ -11,6 +11,9 @@
 //! - Iteration termination is enforced by the type system, so the `std::iter::Iterator` issue
 //!   of calling `next` on a "finished" iterator and workarounds like `Iterator::fuse`
 //!   are unnecessary.
+
+#![feature(try_trait_v2)]
+
 pub mod endless;
 pub mod residual;
 pub mod terminal;
