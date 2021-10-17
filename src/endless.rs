@@ -4,7 +4,7 @@ mod intoterm;
 mod tests;
 
 pub use self::intoterm::EndlessTerminalIter;
-use crate::{residual, IntoTerminalIterator};
+use crate::{residual, terminal};
 
 /// Types which produce an arbitrary number of `Item`s and never terminates.
 pub trait Iterator: Sized {
@@ -37,7 +37,7 @@ where
     }
 }
 
-impl<T> IntoTerminalIterator for T
+impl<T> terminal::IntoIterator for T
 where
     T: Iterator,
 {

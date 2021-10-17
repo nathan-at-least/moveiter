@@ -7,10 +7,10 @@ pub use self::stditer::TerminalStdIter;
 
 /// Types which provide iteration over `Item`s with termination enforced by the type system.
 ///
-/// The `TerminalIterator` trait is near-isomorphic to `std::iter::Iterator`, and in fact, any type
-/// `T: Iterator` is also an instance of `TerminalIterator`.
-pub trait TerminalIterator: Sized {
-    /// The type of elements produced by the `TerminalIterator`.
+/// The `Iterator` trait is near-isomorphic to `std::iter::Iterator`, and in fact, any type
+/// `T: Iterator` is also an instance of `Iterator`.
+pub trait Iterator: Sized {
+    /// The type of elements produced by the `Iterator`.
     type Item;
 
     /// The iteration method consumes `self` by move and produces either `None` or else a new state
@@ -24,21 +24,21 @@ pub trait TerminalIterator: Sized {
     }
 }
 
-/// Types which convert into a [`TerminalIterator`].
-pub trait IntoTerminalIterator {
+/// Types which convert into a [`Iterator`].
+pub trait IntoIterator {
     type Item;
-    type IntoTerminalIter: TerminalIterator<Item = Self::Item>;
+    type IntoTerminalIter: Iterator<Item = Self::Item>;
 
     fn into_term_iter(self) -> Self::IntoTerminalIter;
 }
 
-/// Any `std::iter::Iterator` type is automatically a `TerminalIterator` because `into_next_option` can
+/// Any `std::iter::Iterator` type is automatically a `Iterator` because `into_next_option` can
 /// internally mutate the iterator with `next` then return it as the next state.
-impl<I> TerminalIterator for I
+impl<I> Iterator for I
 where
-    I: Iterator,
+    I: std::iter::Iterator,
 {
-    type Item = <I as Iterator>::Item;
+    type Item = <I as std::iter::Iterator>::Item;
 
     fn into_next_option(mut self) -> Option<(Self, Self::Item)> {
         self.next().map(|item| (self, item))

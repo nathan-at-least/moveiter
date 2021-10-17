@@ -1,6 +1,6 @@
-use crate::{endless, TerminalIterator};
+use crate::{endless, terminal};
 
-/// A wrapper for any [`endless::Iterator`] type which provides [`TerminalIterator`].
+/// A wrapper for any [`endless::Iterator`] type which provides [`terminal::Iterator`].
 #[derive(Debug)]
 pub struct EndlessTerminalIter<EI>(EI)
 where
@@ -15,7 +15,7 @@ where
     }
 }
 
-impl<EI> TerminalIterator for EndlessTerminalIter<EI>
+impl<EI> terminal::Iterator for EndlessTerminalIter<EI>
 where
     EI: endless::Iterator,
 {

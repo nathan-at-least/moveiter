@@ -13,6 +13,4 @@
 //!   are unnecessary.
 pub mod endless;
 pub mod residual;
-mod terminal;
-
-pub use self::terminal::{IntoTerminalIterator, TerminalIterator, TerminalStdIter};
+pub mod terminal;

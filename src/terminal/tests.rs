@@ -1,11 +1,11 @@
-use crate::TerminalIterator;
+use crate::terminal;
 use test_case::test_case;
 
 #[derive(Debug)]
 struct NToThree(usize);
 
 // Mutation-style impl:
-impl TerminalIterator for NToThree {
+impl terminal::Iterator for NToThree {
     type Item = usize;
 
     fn into_next_option(self) -> Option<(NToThree, usize)> {
@@ -21,7 +21,7 @@ impl TerminalIterator for NToThree {
 #[test_case(0..3)] // Tests Iterator blanket impl.
 fn zero_to_three_unrolled_test<MI>(mi: MI)
 where
-    MI: TerminalIterator<Item = usize>,
+    MI: terminal::Iterator<Item = usize>,
 {
     let (s0, x0) = mi.into_next_option().unwrap();
     assert_eq!(0, x0);
@@ -39,7 +39,7 @@ where
 #[test_case(0..3)] // Tests Iterator blanket impl.
 fn zero_to_three_loop_test<MI>(mut mi: MI)
 where
-    MI: TerminalIterator<Item = usize>,
+    MI: terminal::Iterator<Item = usize>,
 {
     for expected in 0..3 {
         let (nextmi, x) = mi.into_next_option().unwrap();
@@ -54,7 +54,7 @@ where
 #[test_case(0..3)] // Tests Iterator blanket impl.
 fn into_iter_test_loop<MI>(mi: MI)
 where
-    MI: TerminalIterator<Item = usize>,
+    MI: terminal::Iterator<Item = usize>,
 {
     for (expected, actual) in (0..3).zip(mi.into_iter()) {
         assert_eq!(expected, actual);

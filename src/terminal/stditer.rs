@@ -1,14 +1,14 @@
-use crate::TerminalIterator;
+use crate::terminal;
 
-/// A wrapper for any [`TerminalIterator`] type which provides `std::iter::Iterator`.
+/// A wrapper for any [`terminal::Iterator`] type which provides `std::iter::Iterator`.
 #[derive(Debug)]
 pub struct TerminalStdIter<MI>(Option<MI>)
 where
-    MI: TerminalIterator;
+    MI: terminal::Iterator;
 
 impl<MI> From<MI> for TerminalStdIter<MI>
 where
-    MI: TerminalIterator,
+    MI: terminal::Iterator,
 {
     fn from(mi: MI) -> Self {
         TerminalStdIter(Some(mi))
@@ -17,9 +17,9 @@ where
 
 impl<MI> Iterator for TerminalStdIter<MI>
 where
-    MI: TerminalIterator,
+    MI: terminal::Iterator,
 {
-    type Item = <MI as TerminalIterator>::Item;
+    type Item = <MI as terminal::Iterator>::Item;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.0.take() {

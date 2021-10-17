@@ -1,16 +1,16 @@
-use crate::TerminalIterator;
+use crate::terminal;
 
 #[cfg(test)]
 mod tests;
 
 /// Types which produces a sequence of `Item`s and then finally a `Residual` type.
 ///
-/// This is a generalization of `TerminalIterator` (and `std::iter::Iterator`) which enables more
+/// This is a generalization of `terminal::Iterator` (and `std::iter::Iterator`) which enables more
 /// expressive termination. For example, a type which performs input with `std::io` can produce
 /// simple `Item` results and terminate with a `std::io::Result<()>` which ensures that any IO
 /// errors terminate iteration.
 ///
-/// Any type which is `TerminalIterator` is also an instance of `Iterator` with `Residual =
+/// Any type which is `terminal::Iterator` is also an instance of `Iterator` with `Residual =
 /// ()`.
 pub trait Iterator: Sized {
     /// The type of the elements produced by the iterator:
@@ -33,13 +33,13 @@ pub trait IntoIterator {
     fn into_res_iter(self) -> Self::IntoResidual;
 }
 
-/// Any `TerminalIterator` type is also a `Iterator` with `()` as the `Residual` type. This is
+/// Any `terminal::Iterator` type is also a `Iterator` with `()` as the `Residual` type. This is
 /// analogous to the isomorphism of `Option<T>` with `Result<T, ()>`.
 impl<T> Iterator for T
 where
-    T: TerminalIterator,
+    T: terminal::Iterator,
 {
-    type Item = <Self as TerminalIterator>::Item;
+    type Item = <Self as terminal::Iterator>::Item;
     type Residual = ();
 
     fn into_next_result(self) -> Result<(Self, Self::Item), ()> {
