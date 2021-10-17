@@ -11,10 +11,9 @@
 //! - Iteration termination is enforced by the type system, so the `std::iter::Iterator` issue
 //!   of calling `next` on a "finished" iterator and workarounds like `Iterator::fuse`
 //!   are unnecessary.
-mod endless;
+pub mod endless;
 mod residual;
 mod terminal;
 
-pub use self::endless::{EndlessIterator, EndlessTerminalIter, IntoEndlessIterator};
 pub use self::residual::{IntoResidualIterator, ResidualIterator};
 pub use self::terminal::{IntoTerminalIterator, TerminalIterator, TerminalStdIter};

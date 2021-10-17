@@ -7,7 +7,7 @@ pub use self::intoterm::EndlessTerminalIter;
 use crate::{IntoTerminalIterator, ResidualIterator};
 
 /// Types which produce an arbitrary number of `Item`s and never terminates.
-pub trait EndlessIterator: Sized {
+pub trait Iterator: Sized {
     /// The type of elements produced.
     type Item;
 
@@ -15,17 +15,17 @@ pub trait EndlessIterator: Sized {
     fn into_next(self) -> (Self, Self::Item);
 }
 
-/// Types which convert into an [`EndlessIterator`].
-pub trait IntoEndlessIterator {
+/// Types which convert into an [`Iterator`].
+pub trait IntoIterator {
     type Item;
-    type IntoEndless: EndlessIterator<Item = Self::Item>;
+    type IntoEndless: Iterator<Item = Self::Item>;
 
     fn into_endless_iter(self) -> Self::IntoEndless;
 }
 
 /// Any `ResidualIterator` type with a `Residual` type of `std::convert::Infallible` can never
-/// terminate as guaranteed by the type system, so it is automatically an `EndlessIterator`.
-impl<T> EndlessIterator for T
+/// terminate as guaranteed by the type system, so it is automatically an `Iterator`.
+impl<T> Iterator for T
 where
     T: ResidualIterator<Residual = std::convert::Infallible>,
 {
@@ -39,9 +39,9 @@ where
 
 impl<T> IntoTerminalIterator for T
 where
-    T: EndlessIterator,
+    T: Iterator,
 {
-    type Item = <T as EndlessIterator>::Item;
+    type Item = <T as Iterator>::Item;
     type IntoTerminalIter = EndlessTerminalIter<Self>;
 
     fn into_term_iter(self) -> EndlessTerminalIter<Self> {
