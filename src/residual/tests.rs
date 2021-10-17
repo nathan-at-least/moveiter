@@ -50,3 +50,29 @@ where
     }
     assert_eq!((), ti.into_next().unwrap_residual());
 }
+
+#[test_case(MyTermIt(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator->TerminalIter blanket impl.
+fn test_qmark_operator<TI>(ti: TI)
+where
+    TI: Iterator<Item = usize, Residual = ()>,
+{
+    fn add_first_five_elements<TI2>(mut ti: TI2) -> Iteration<TI2, usize, ()>
+    where
+        TI2: Iterator<Item = usize, Residual = ()>,
+    {
+        let mut sum = 0;
+
+        for _ in 0..42 {
+            let (newti, x) = ti.into_next()?;
+            ti = newti;
+            sum += x;
+        }
+
+        unreachable!("The iteration should not have completed; sum: {:?}", sum);
+    }
+
+    // This should break early because its loop is longer than the iterator:
+    let r = add_first_five_elements(ti).unwrap_residual();
+    assert_eq!((), r);
+}
