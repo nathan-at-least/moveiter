@@ -20,7 +20,7 @@ impl ResidualIterator for MyTermIt {
 }
 
 #[test_case(MyTermIt(0))] // Tests hand-coded impl.
-#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+#[test_case(0..3)] // Tests Iterator->TerminalIter blanket impl.
 fn unrolled_test<TI>(ti: TI)
 where
     TI: ResidualIterator<Item = usize, Residual = ()> + Debug,
@@ -38,7 +38,7 @@ where
 }
 
 #[test_case(MyTermIt(0))] // Tests hand-coded impl.
-#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
+#[test_case(0..3)] // Tests Iterator->TerminalIter blanket impl.
 fn newyears_loop_test<TI>(mut ti: TI)
 where
     TI: ResidualIterator<Item = usize, Residual = ()> + Debug,

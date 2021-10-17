@@ -1,10 +1,10 @@
-mod intomoveiter;
+mod intoterm;
 
 #[cfg(test)]
 mod tests;
 
-pub use self::intomoveiter::EndlessMoveIter;
-use crate::{IntoMoveIterator, ResidualIterator};
+pub use self::intoterm::EndlessTerminalIter;
+use crate::{IntoTerminalIterator, ResidualIterator};
 
 /// Types which produce an arbitrary number of `Item`s and never terminates.
 pub trait EndlessIterator: Sized {
@@ -37,14 +37,14 @@ where
     }
 }
 
-impl<T> IntoMoveIterator for T
+impl<T> IntoTerminalIterator for T
 where
     T: EndlessIterator,
 {
     type Item = <T as EndlessIterator>::Item;
-    type IntoMoveIter = EndlessMoveIter<Self>;
+    type IntoTerminalIter = EndlessTerminalIter<Self>;
 
-    fn into_move_iter(self) -> EndlessMoveIter<Self> {
-        EndlessMoveIter::from(self)
+    fn into_term_iter(self) -> EndlessTerminalIter<Self> {
+        EndlessTerminalIter::from(self)
     }
 }
