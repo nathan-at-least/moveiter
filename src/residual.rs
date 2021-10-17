@@ -10,9 +10,9 @@ mod tests;
 /// simple `Item` results and terminate with a `std::io::Result<()>` which ensures that any IO
 /// errors terminate iteration.
 ///
-/// Any type which is `TerminalIterator` is also an instance of `ResidualIterator` with `Residual =
+/// Any type which is `TerminalIterator` is also an instance of `Iterator` with `Residual =
 /// ()`.
-pub trait ResidualIterator: Sized {
+pub trait Iterator: Sized {
     /// The type of the elements produced by the iterator:
     type Item;
 
@@ -24,18 +24,18 @@ pub trait ResidualIterator: Sized {
     fn into_next_result(self) -> Result<(Self, Self::Item), Self::Residual>;
 }
 
-/// Types which convert into a [`ResidualIterator`].
-pub trait IntoResidualIterator {
+/// Types which convert into a [`Iterator`].
+pub trait IntoIterator {
     type Item;
     type Residual;
-    type IntoResidual: ResidualIterator<Item = Self::Item, Residual = Self::Residual>;
+    type IntoResidual: Iterator<Item = Self::Item, Residual = Self::Residual>;
 
     fn into_res_iter(self) -> Self::IntoResidual;
 }
 
-/// Any `TerminalIterator` type is also a `ResidualIterator` with `()` as the `Residual` type. This is
+/// Any `TerminalIterator` type is also a `Iterator` with `()` as the `Residual` type. This is
 /// analogous to the isomorphism of `Option<T>` with `Result<T, ()>`.
-impl<T> ResidualIterator for T
+impl<T> Iterator for T
 where
     T: TerminalIterator,
 {

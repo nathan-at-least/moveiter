@@ -12,8 +12,7 @@
 //!   of calling `next` on a "finished" iterator and workarounds like `Iterator::fuse`
 //!   are unnecessary.
 pub mod endless;
-mod residual;
+pub mod residual;
 mod terminal;
 
-pub use self::residual::{IntoResidualIterator, ResidualIterator};
 pub use self::terminal::{IntoTerminalIterator, TerminalIterator, TerminalStdIter};

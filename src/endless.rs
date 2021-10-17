@@ -4,7 +4,7 @@ mod intoterm;
 mod tests;
 
 pub use self::intoterm::EndlessTerminalIter;
-use crate::{IntoTerminalIterator, ResidualIterator};
+use crate::{residual, IntoTerminalIterator};
 
 /// Types which produce an arbitrary number of `Item`s and never terminates.
 pub trait Iterator: Sized {
@@ -23,17 +23,17 @@ pub trait IntoIterator {
     fn into_endless_iter(self) -> Self::IntoEndless;
 }
 
-/// Any `ResidualIterator` type with a `Residual` type of `std::convert::Infallible` can never
+/// Any `residual::Iterator` type with a `Residual` type of `std::convert::Infallible` can never
 /// terminate as guaranteed by the type system, so it is automatically an `Iterator`.
 impl<T> Iterator for T
 where
-    T: ResidualIterator<Residual = std::convert::Infallible>,
+    T: residual::Iterator<Residual = std::convert::Infallible>,
 {
-    type Item = <Self as ResidualIterator>::Item;
+    type Item = <Self as residual::Iterator>::Item;
 
     fn into_next(self) -> (Self, Self::Item) {
         self.into_next_result()
-            .expect("ResidualIterator cannot produce Infallible Residual.")
+            .expect("residual::Iterator cannot produce Infallible Residual.")
     }
 }
 
