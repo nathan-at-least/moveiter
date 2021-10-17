@@ -1,4 +1,4 @@
-use crate::TerminalIterator;
+use crate::ResidualIterator;
 use std::fmt::Debug;
 use test_case::test_case;
 
@@ -6,9 +6,9 @@ use test_case::test_case;
 struct MyTermIt(usize);
 
 // Mutation-style impl:
-impl TerminalIterator for MyTermIt {
+impl ResidualIterator for MyTermIt {
     type Item = usize;
-    type Terminal = ();
+    type Residual = ();
 
     fn into_next_result(self) -> Result<(MyTermIt, usize), ()> {
         if self.0 == 3 {
@@ -23,7 +23,7 @@ impl TerminalIterator for MyTermIt {
 #[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
 fn unrolled_test<TI>(ti: TI)
 where
-    TI: TerminalIterator<Item = usize, Terminal = ()> + Debug,
+    TI: ResidualIterator<Item = usize, Residual = ()> + Debug,
 {
     let (s0, x0) = ti.into_next_result().unwrap();
     assert_eq!(0, x0);
@@ -41,7 +41,7 @@ where
 #[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
 fn newyears_loop_test<TI>(mut ti: TI)
 where
-    TI: TerminalIterator<Item = usize, Terminal = ()> + Debug,
+    TI: ResidualIterator<Item = usize, Residual = ()> + Debug,
 {
     for expected in 0..3 {
         let (nextti, x) = ti.into_next_result().unwrap();
