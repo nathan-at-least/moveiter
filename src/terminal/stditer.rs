@@ -1,25 +1,25 @@
-use crate::MoveIterator;
+use crate::terminal;
 
-/// A wrapper for any [`MoveIterator`] type which provides `std::iter::Iterator`.
+/// A wrapper for any [`terminal::Iterator`] type which provides `std::iter::Iterator`.
 #[derive(Debug)]
-pub struct MoveStdIter<MI>(Option<MI>)
+pub struct TerminalStdIter<MI>(Option<MI>)
 where
-    MI: MoveIterator;
+    MI: terminal::Iterator;
 
-impl<MI> From<MI> for MoveStdIter<MI>
+impl<MI> From<MI> for TerminalStdIter<MI>
 where
-    MI: MoveIterator,
+    MI: terminal::Iterator,
 {
     fn from(mi: MI) -> Self {
-        MoveStdIter(Some(mi))
+        TerminalStdIter(Some(mi))
     }
 }
 
-impl<MI> Iterator for MoveStdIter<MI>
+impl<MI> Iterator for TerminalStdIter<MI>
 where
-    MI: MoveIterator,
+    MI: terminal::Iterator,
 {
-    type Item = <MI as MoveIterator>::Item;
+    type Item = <MI as terminal::Iterator>::Item;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.0.take() {

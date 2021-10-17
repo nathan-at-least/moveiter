@@ -1,48 +1,47 @@
-use crate::MoveIterator;
+//! An Iterator which terminates without any associated value.
+mod stditer;
 
 #[cfg(test)]
 mod tests;
 
-/// Types which produces a sequence of `Item`s and then finally a `Terminal` type.
+pub use self::stditer::TerminalStdIter;
+
+/// Types which provide iteration over `Item`s with termination enforced by the type system.
 ///
-/// This is a generalization of `MoveIterator` (and `std::iter::Iterator`) which enables more
-/// expressive termination. For example, a type which performs input with `std::io` can produce
-/// simple `Item` results and terminate with a `std::io::Result<()>` which ensures that any IO
-/// errors terminate iteration.
-///
-/// Any type which is `MoveIterator` is also an instance of `TerminalIterator` with `Terminal =
-/// ()`.
-pub trait TerminalIterator: Sized {
-    /// The type of the elements produced by the iterator:
+/// The `Iterator` trait is near-isomorphic to `std::iter::Iterator`, and in fact, any type
+/// `T: Iterator` is also an instance of `Iterator`.
+pub trait Iterator: Sized {
+    /// The type of elements produced by the `Iterator`.
     type Item;
 
-    /// A `Terminal` value is produced when iteration terminates:
-    type Terminal;
+    /// The iteration method consumes `self` by move and produces either `None` or else a new state
+    /// and the next `Item` element.
+    fn into_next_option(self) -> Option<(Self, Self::Item)>;
 
-    /// The iteration method produces either a next state and item, or a `Terminal` value. Note
-    /// that although this is a `Result`, the `Terminal` value may not represent an error, per-se.
-    fn into_next_result(self) -> Result<(Self, Self::Item), Self::Terminal>;
+    /// Any `TerminalIter` can be converted into a wrapper type `TerminalStdIter` which is an
+    /// `Iterator`, which is useful for integrating to existing `Iterator`-based APIs.
+    fn into_iter(self) -> TerminalStdIter<Self> {
+        TerminalStdIter::from(self)
+    }
 }
 
-/// Types which convert into a [`TerminalIterator`].
-pub trait IntoTerminalIterator {
+/// Types which convert into a [`Iterator`].
+pub trait IntoIterator {
     type Item;
-    type Terminal;
-    type IntoTerminal: TerminalIterator<Item = Self::Item, Terminal = Self::Terminal>;
+    type IntoTerminalIter: Iterator<Item = Self::Item>;
 
-    fn into_term_iter(self) -> Self::IntoTerminal;
+    fn into_term_iter(self) -> Self::IntoTerminalIter;
 }
 
-/// Any `MoveIterator` type is also a `TerminalIterator` with `()` as the `Terminal` type. This is
-/// analogous to the isomorphism of `Option<T>` with `Result<T, ()>`.
-impl<T> TerminalIterator for T
+/// Any `std::iter::Iterator` type is automatically a `Iterator` because `into_next_option` can
+/// internally mutate the iterator with `next` then return it as the next state.
+impl<I> Iterator for I
 where
-    T: MoveIterator,
+    I: std::iter::Iterator,
 {
-    type Item = <Self as MoveIterator>::Item;
-    type Terminal = ();
+    type Item = <I as std::iter::Iterator>::Item;
 
-    fn into_next_result(self) -> Result<(Self, Self::Item), ()> {
-        self.into_next_option().ok_or(())
+    fn into_next_option(mut self) -> Option<(Self, Self::Item)> {
+        self.next().map(|item| (self, item))
     }
 }

@@ -1,13 +1,14 @@
-mod intomoveiter;
+//! An Iterator with move semantics that never terminates.
+mod intoterm;
 
 #[cfg(test)]
 mod tests;
 
-pub use self::intomoveiter::EndlessMoveIter;
-use crate::{IntoMoveIterator, TerminalIterator};
+pub use self::intoterm::EndlessTerminalIter;
+use crate::{residual, terminal};
 
 /// Types which produce an arbitrary number of `Item`s and never terminates.
-pub trait EndlessIterator: Sized {
+pub trait Iterator: Sized {
     /// The type of elements produced.
     type Item;
 
@@ -15,36 +16,36 @@ pub trait EndlessIterator: Sized {
     fn into_next(self) -> (Self, Self::Item);
 }
 
-/// Types which convert into an [`EndlessIterator`].
-pub trait IntoEndlessIterator {
+/// Types which convert into an [`Iterator`].
+pub trait IntoIterator {
     type Item;
-    type IntoEndless: EndlessIterator<Item = Self::Item>;
+    type IntoEndless: Iterator<Item = Self::Item>;
 
     fn into_endless_iter(self) -> Self::IntoEndless;
 }
 
-/// Any `TerminalIterator` type with a `Terminal` type of `std::convert::Infallible` can never
-/// terminate as guaranteed by the type system, so it is automatically an `EndlessIterator`.
-impl<T> EndlessIterator for T
+/// Any `residual::Iterator` type with a `Residual` type of `std::convert::Infallible` can never
+/// terminate as guaranteed by the type system, so it is automatically an `Iterator`.
+impl<T> Iterator for T
 where
-    T: TerminalIterator<Terminal = std::convert::Infallible>,
+    T: residual::Iterator<Residual = std::convert::Infallible>,
 {
-    type Item = <Self as TerminalIterator>::Item;
+    type Item = <Self as residual::Iterator>::Item;
 
     fn into_next(self) -> (Self, Self::Item) {
         self.into_next_result()
-            .expect("TerminalIterator cannot produce Infallible Terminal.")
+            .expect("residual::Iterator cannot produce Infallible Residual.")
     }
 }
 
-impl<T> IntoMoveIterator for T
+impl<T> terminal::IntoIterator for T
 where
-    T: EndlessIterator,
+    T: Iterator,
 {
-    type Item = <T as EndlessIterator>::Item;
-    type IntoMoveIter = EndlessMoveIter<Self>;
+    type Item = <T as Iterator>::Item;
+    type IntoTerminalIter = EndlessTerminalIter<Self>;
 
-    fn into_move_iter(self) -> EndlessMoveIter<Self> {
-        EndlessMoveIter::from(self)
+    fn into_term_iter(self) -> EndlessTerminalIter<Self> {
+        EndlessTerminalIter::from(self)
     }
 }

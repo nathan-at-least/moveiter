@@ -1,52 +1,62 @@
-use crate::TerminalIterator;
-use std::fmt::Debug;
+use crate::terminal;
 use test_case::test_case;
 
 #[derive(Debug)]
-struct MyTermIt(usize);
+struct NToThree(usize);
 
 // Mutation-style impl:
-impl TerminalIterator for MyTermIt {
+impl terminal::Iterator for NToThree {
     type Item = usize;
-    type Terminal = ();
 
-    fn into_next_result(self) -> Result<(MyTermIt, usize), ()> {
+    fn into_next_option(self) -> Option<(NToThree, usize)> {
         if self.0 == 3 {
-            Err(())
+            None
         } else {
-            Ok((MyTermIt(self.0 + 1), self.0))
+            Some((NToThree(self.0 + 1), self.0))
         }
     }
 }
 
-#[test_case(MyTermIt(0))] // Tests hand-coded impl.
-#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
-fn unrolled_test<TI>(ti: TI)
+#[test_case(NToThree(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator blanket impl.
+fn zero_to_three_unrolled_test<MI>(mi: MI)
 where
-    TI: TerminalIterator<Item = usize, Terminal = ()> + Debug,
+    MI: terminal::Iterator<Item = usize>,
 {
-    let (s0, x0) = ti.into_next_result().unwrap();
+    let (s0, x0) = mi.into_next_option().unwrap();
     assert_eq!(0, x0);
 
-    let (s1, x1) = s0.into_next_result().unwrap();
+    let (s1, x1) = s0.into_next_option().unwrap();
     assert_eq!(1, x1);
 
-    let (s2, x2) = s1.into_next_result().unwrap();
+    let (s2, x2) = s1.into_next_option().unwrap();
     assert_eq!(2, x2);
 
-    assert_eq!((), s2.into_next_result().unwrap_err());
+    assert!(s2.into_next_option().is_none());
 }
 
-#[test_case(MyTermIt(0))] // Tests hand-coded impl.
-#[test_case(0..3)] // Tests Iterator->MoveIter blanket impl.
-fn newyears_loop_test<TI>(mut ti: TI)
+#[test_case(NToThree(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator blanket impl.
+fn zero_to_three_loop_test<MI>(mut mi: MI)
 where
-    TI: TerminalIterator<Item = usize, Terminal = ()> + Debug,
+    MI: terminal::Iterator<Item = usize>,
 {
     for expected in 0..3 {
-        let (nextti, x) = ti.into_next_result().unwrap();
+        let (nextmi, x) = mi.into_next_option().unwrap();
         assert_eq!(expected, x);
-        ti = nextti;
+        mi = nextmi;
     }
-    assert_eq!((), ti.into_next_result().unwrap_err());
+
+    assert!(mi.into_next_option().is_none());
+}
+
+#[test_case(NToThree(0))] // Tests hand-coded impl.
+#[test_case(0..3)] // Tests Iterator blanket impl.
+fn into_iter_test_loop<MI>(mi: MI)
+where
+    MI: terminal::Iterator<Item = usize>,
+{
+    for (expected, actual) in (0..3).zip(mi.into_iter()) {
+        assert_eq!(expected, actual);
+    }
 }
