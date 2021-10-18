@@ -48,9 +48,9 @@ where
     type Residual = ();
 
     fn into_next(self) -> Iteration<Self, Self::Item, ()> {
-        match self.into_next_option() {
-            None => Residual(()),
-            Some((s, x)) => Next(s, x),
+        match self.into_next() {
+            terminal::Terminal => Residual(()),
+            terminal::Next(s, x) => Next(s, x),
         }
     }
 }

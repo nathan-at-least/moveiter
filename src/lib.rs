@@ -3,7 +3,7 @@
 //! most restricted: [`residual::Iterator`], [`terminal::Iterator`], and [`endless::Iterator`].
 //!
 //! All of these traits use move semantics where the iterator state is moved during iteration
-//! into a newstate when producing a next item. An example is [`terminal::Iterator::into_next_option`]
+//! into a newstate when producing a next item. An example is [`terminal::Iterator::into_next`]
 //! which is similar to `std::iter::Iterator::next` except it uses move semantics.
 //!
 //! This approach has two notable characteristics:

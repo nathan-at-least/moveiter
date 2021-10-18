@@ -1,9 +1,11 @@
 //! An Iterator which terminates without any associated value.
+mod iteration;
 mod stditer;
 
 #[cfg(test)]
 mod tests;
 
+pub use self::iteration::{Iteration, Next, Terminal};
 pub use self::stditer::TerminalStdIter;
 
 /// Types which provide iteration over `Item`s with termination enforced by the type system.
@@ -16,7 +18,7 @@ pub trait Iterator: Sized {
 
     /// The iteration method consumes `self` by move and produces either `None` or else a new state
     /// and the next `Item` element.
-    fn into_next_option(self) -> Option<(Self, Self::Item)>;
+    fn into_next(self) -> Iteration<Self, Self::Item>;
 
     /// Any `TerminalIter` can be converted into a wrapper type `TerminalStdIter` which is an
     /// `Iterator`, which is useful for integrating to existing `Iterator`-based APIs.
@@ -33,7 +35,7 @@ pub trait IntoIterator {
     fn into_term_iter(self) -> Self::IntoTerminalIter;
 }
 
-/// Any `std::iter::Iterator` type is automatically a `Iterator` because `into_next_option` can
+/// Any `std::iter::Iterator` type is automatically a `Iterator` because `into_next` can
 /// internally mutate the iterator with `next` then return it as the next state.
 impl<I> Iterator for I
 where
@@ -41,7 +43,7 @@ where
 {
     type Item = <I as std::iter::Iterator>::Item;
 
-    fn into_next_option(mut self) -> Option<(Self, Self::Item)> {
-        self.next().map(|item| (self, item))
+    fn into_next(mut self) -> Iteration<Self, Self::Item> {
+        self.next().map_or(Terminal, |item| Next(self, item))
     }
 }
