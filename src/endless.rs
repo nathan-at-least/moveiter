@@ -1,10 +1,12 @@
 //! An Iterator with move semantics that never terminates.
 mod intoterm;
+mod iteration;
 
 #[cfg(test)]
 mod tests;
 
 pub use self::intoterm::EndlessTerminalIter;
+pub use self::iteration::Iteration;
 use crate::{residual, terminal};
 
 /// Types which produce an arbitrary number of `Item`s and never terminates.
@@ -13,7 +15,7 @@ pub trait Iterator: Sized {
     type Item;
 
     /// The `into_next` method produces a new state of type `Self` and an `Item`.
-    fn into_next(self) -> (Self, Self::Item);
+    fn into_next(self) -> Iteration<Self, Self::Item>;
 }
 
 /// Types which convert into an [`Iterator`].
@@ -32,9 +34,9 @@ where
 {
     type Item = <Self as residual::Iterator>::Item;
 
-    fn into_next(self) -> (Self, Self::Item) {
+    fn into_next(self) -> Iteration<Self, Self::Item> {
         match <Self as residual::Iterator>::into_next(self) {
-            residual::Next(s, x) => (s, x),
+            residual::Next(s, x) => Iteration(s, x),
             _ => unreachable!("Residual is Infallable"),
         }
     }

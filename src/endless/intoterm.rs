@@ -22,7 +22,7 @@ where
     type Item = <EI as endless::Iterator>::Item;
 
     fn into_next(self) -> terminal::Iteration<Self, Self::Item> {
-        let (newstate, item) = self.0.into_next();
+        let endless::Iteration(newstate, item) = self.0.into_next();
         terminal::Next(EndlessTerminalIter::from(newstate), item)
     }
 }
