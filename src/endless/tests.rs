@@ -1,4 +1,4 @@
-use crate::endless;
+use crate::endless::{self, Iteration};
 use test_case::test_case;
 
 #[derive(Debug)]
@@ -8,10 +8,10 @@ struct MutCounter(usize);
 impl endless::Iterator for MutCounter {
     type Item = usize;
 
-    fn into_next(mut self) -> (MutCounter, usize) {
+    fn into_next(mut self) -> Iteration<MutCounter, usize> {
         let item = self.0;
         self.0 += 1;
-        (self, item)
+        Iteration(self, item)
     }
 }
 
@@ -22,8 +22,8 @@ struct FuncCounter(usize);
 impl endless::Iterator for FuncCounter {
     type Item = usize;
 
-    fn into_next(self) -> (FuncCounter, usize) {
-        (FuncCounter(self.0 + 1), self.0)
+    fn into_next(self) -> Iteration<FuncCounter, usize> {
+        Iteration(FuncCounter(self.0 + 1), self.0)
     }
 }
 
@@ -33,13 +33,13 @@ fn counter_unrolled_test<C>(c: C)
 where
     C: endless::Iterator<Item = usize>,
 {
-    let (s0, x0) = c.into_next();
+    let Iteration(s0, x0) = c.into_next();
     assert_eq!(0, x0);
 
-    let (s1, x1) = s0.into_next();
+    let Iteration(s1, x1) = s0.into_next();
     assert_eq!(1, x1);
 
-    let (_, x2) = s1.into_next();
+    let Iteration(_, x2) = s1.into_next();
     assert_eq!(2, x2);
 }
 
@@ -50,7 +50,7 @@ where
     C: endless::Iterator<Item = usize>,
 {
     for expected in 0..1042 {
-        let (nextc, x) = c.into_next();
+        let Iteration(nextc, x) = c.into_next();
         assert_eq!(expected, x);
         c = nextc;
     }

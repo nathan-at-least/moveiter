@@ -1,4 +1,4 @@
-use crate::terminal;
+use crate::terminal::{self, Next, Terminal};
 
 /// A wrapper for any [`terminal::Iterator`] type which provides `std::iter::Iterator`.
 #[derive(Debug)]
@@ -24,9 +24,9 @@ where
     fn next(&mut self) -> Option<Self::Item> {
         match self.0.take() {
             None => None,
-            Some(mi) => match mi.into_next_option() {
-                None => None,
-                Some((newstate, item)) => {
+            Some(mi) => match mi.into_next() {
+                Terminal => None,
+                Next(newstate, item) => {
                     self.0 = Some(newstate);
                     Some(item)
                 }
