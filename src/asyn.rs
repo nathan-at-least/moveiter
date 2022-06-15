@@ -1,2 +1,4 @@
 //! The async family of move iterator traits.
-pub mod terminal;
+mod terminal;
+
+pub use self::terminal::AsyncTerminalMoveIterator;
