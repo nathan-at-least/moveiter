@@ -97,6 +97,9 @@ use either::Either;
 ///     |                                                    ++++++
 /// ```
 ///
+/// This example emphasizes how `move` semantics prevent "iterating past the end", since upon
+/// termination, there is no outstanding ownership or reference to any iterator value.
+///
 /// # `Result` Terminal Call-site Example
 ///
 /// A common pattern is for `Terminal` to be a [Result]:
