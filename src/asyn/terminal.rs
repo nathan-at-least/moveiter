@@ -27,7 +27,7 @@ use either::Either;
 ///
 /// # Local `mut` call site:
 ///
-/// To express a loop (without using the `for_each` method) a common pattern is to use `mut` assignment to the iterator values:
+/// To express a loop a common pattern is to use `mut` assignment to the iterator values:
 ///
 /// ```
 /// # use moveiter::AsyncTerminalMoveIterator;
@@ -49,8 +49,6 @@ use either::Either;
 ///     }
 /// }
 /// ```
-///
-/// The `AsyncTerminalMoveIterator::for_each` provided method simplifies this pattern.
 ///
 /// # Example: Move Semantics
 ///
