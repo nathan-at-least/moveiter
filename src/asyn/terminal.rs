@@ -57,7 +57,7 @@ use either::Either;
 /// ```compile_fail
 /// # use moveiter::AsyncTerminalMoveIterator;
 /// async fn process_items<I, R>(mut it: I) -> R
-///   where I: AsyncTerminalMoveIterator<Terminal = R>,
+///     where I: AsyncTerminalMoveIterator<Terminal = R>,
 /// {
 ///     use either::Either::{Left, Right};
 ///
