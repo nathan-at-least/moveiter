@@ -81,14 +81,22 @@ use either::Either;
 /// ```text
 /// error[E0382]: use of moved value: `it`
 ///    --> src/asyn/terminal.rs:67:15
-///        |
-///        5   | async fn process_items<I, R>(mut it: I) -> R
-///            |                              ------ move occurs because `it` has type `I`, which
-///            does not implement the `Copy` trait
-///            ...
-///            11  |         match it.atmi_next().await {
-///                |               ^^ ----------- `it` moved due to this method call, in previous
-///                iteration of loop
+///     |
+/// 5   | async fn process_items<I, R>(mut it: I) -> R
+///     |                              ------ move occurs because `it` has type `I`, which does not implement the `Copy` trait
+/// ...
+/// 11  |         match it.atmi_next().await {
+///     |               ^^ ----------- `it` moved due to this method call, in previous iteration of loop
+///     |
+/// note: this function takes ownership of the receiver `self`, which moves `it`
+///    --> /home/user/hack/moveiter/src/asyn/terminal.rs:142:24
+///     |
+/// 142 |     async fn atmi_next(self) -> Either<(Self, Self::Item), Self::Terminal>;
+///     |                        ^^^^
+/// help: consider further restricting this bound
+///     |
+/// 6   |   where I: AsyncTerminalMoveIterator<Terminal = R> + Copy,
+///     |                                                    ++++++
 /// ```
 ///
 /// # `Result` Terminal Call-site Example
