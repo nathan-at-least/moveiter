@@ -99,7 +99,7 @@ use either::Either;
 ///
 /// # `Result` Terminal Call-site Example
 ///
-/// A common pattern is for `Terminal` to be a `Result`:
+/// A common pattern is for `Terminal` to be a [Result]:
 ///
 /// ```
 /// # use moveiter::AsyncTerminalMoveIterator;
