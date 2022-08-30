@@ -14,13 +14,13 @@ use either::Either;
 /// # use moveiter::AsyncTerminalMoveIterator;
 /// let it = 0..2;
 ///
-/// let (it2, a) = it.atmi_next().await.left().unwrap();
+/// let (it2, a) = it.next().await.left().unwrap();
 /// assert_eq!(a, 0);
 ///
-/// let (it3, b) = it2.atmi_next().await.left().unwrap();
+/// let (it3, b) = it2.next().await.left().unwrap();
 /// assert_eq!(b, 1);
 ///
-/// let term = it3.atmi_next().await.right().unwrap();
+/// let term = it3.next().await.right().unwrap();
 /// assert_eq!((), term);
 /// # });
 /// ```
@@ -37,7 +37,7 @@ use either::Either;
 ///     use either::Either::{Left, Right};
 ///
 ///     loop {
-///         match it.atmi_next().await {
+///         match it.next().await {
 ///             Left((nextit, x)) => {
 ///                 it = nextit;
 ///                 // Process `x`...
@@ -62,7 +62,7 @@ use either::Either;
 ///     use either::Either::{Left, Right};
 ///
 ///     loop {
-///         match it.atmi_next().await {
+///         match it.next().await {
 ///             Left((_, x)) => {
 ///                 // Process `x`...
 ///             }
@@ -83,13 +83,13 @@ use either::Either;
 /// 5   | async fn process_items<I, R>(mut it: I) -> R
 ///     |                              ------ move occurs because `it` has type `I`, which does not implement the `Copy` trait
 /// ...
-/// 11  |         match it.atmi_next().await {
+/// 11  |         match it.next().await {
 ///     |               ^^ ----------- `it` moved due to this method call, in previous iteration of loop
 ///     |
 /// note: this function takes ownership of the receiver `self`, which moves `it`
 ///    --> /home/user/hack/moveiter/src/asyn/terminal.rs:142:24
 ///     |
-/// 142 |     async fn atmi_next(self) -> Either<(Self, Self::Item), Self::Terminal>;
+/// 142 |     async fn next(self) -> Either<(Self, Self::Item), Self::Terminal>;
 ///     |                        ^^^^
 /// help: consider further restricting this bound
 ///     |
@@ -115,7 +115,7 @@ use either::Either;
 ///     let mut sum = 0;
 ///
 ///     loop {
-///         match it.atmi_next().await {
+///         match it.next().await {
 ///             Left((nextit, x)) => {
 ///                 it = nextit;
 ///                 sum += x;
@@ -145,10 +145,10 @@ pub trait AsyncTerminalMoveIterator: Sized + Send {
     /// # trait T: Sized {
     /// # type Item;
     /// # type Terminal;
-    /// async fn atmi_next(self) -> Either<(Self, Self::Item), Self::Terminal>;
+    /// async fn next(self) -> Either<(Self, Self::Item), Self::Terminal>;
     /// # }
     /// ```
-    async fn atmi_next(self) -> Either<(Self, Self::Item), Self::Terminal>;
+    async fn next(self) -> Either<(Self, Self::Item), Self::Terminal>;
 }
 
 #[async_trait]
@@ -159,13 +159,11 @@ where
     type Item = I::Item;
     type Terminal = ();
 
-    async fn atmi_next(mut self) -> Either<(Self, Self::Item), Self::Terminal> {
+    async fn next(mut self) -> Either<(Self, Self::Item), Self::Terminal> {
         use Either::*;
 
-        if let Some(item) = self.next() {
-            Left((self, item))
-        } else {
-            Right(())
-        }
+        Iterator::next(&mut self)
+            .map(|item| Left((self, item)))
+            .unwrap_or(Right(()))
     }
 }

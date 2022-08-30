@@ -13,13 +13,13 @@ use async_trait::async_trait;
 /// # use moveiter::AsyncFiniteMoveIterator;
 /// let it = 0..2;
 ///
-/// let (it2, a) = it.afmi_next().await.unwrap();
+/// let (it2, a) = it.next().await.unwrap();
 /// assert_eq!(a, 0);
 ///
-/// let (it3, b) = it2.afmi_next().await.unwrap();
+/// let (it3, b) = it2.next().await.unwrap();
 /// assert_eq!(b, 1);
 ///
-/// let empty = it3.afmi_next().await;
+/// let empty = it3.next().await;
 /// assert!(empty.is_none());
 /// # });
 /// ```
@@ -33,7 +33,7 @@ use async_trait::async_trait;
 /// async fn process_items<I>(mut it: I)
 ///   where I: AsyncFiniteMoveIterator,
 /// {
-///     while let Some((nextit, x)) = it.afmi_next().await {
+///     while let Some((nextit, x)) = it.next().await {
 ///         it = nextit;
 ///         // Process `x`...
 ///     }
@@ -49,7 +49,7 @@ use async_trait::async_trait;
 /// async fn process_items<I>(mut it: I)
 ///     where I: AsyncFiniteMoveIterator,
 /// {
-///     while let Some((nextit, x)) = it.afmi_next().await {
+///     while let Some((nextit, x)) = it.next().await {
 ///         // Process `x`...
 ///     }
 /// }
@@ -64,13 +64,13 @@ use async_trait::async_trait;
 /// 5  | async fn process_items<I>(mut it: I)
 ///    |                           ------ move occurs because `it` has type `I`, which does not implement the `Copy` trait
 /// ...
-/// 8  |     while let Some((nextit, x)) = it.afmi_next().await {
+/// 8  |     while let Some((nextit, x)) = it.next().await {
 ///    |                                   ^^ ----------- `it` moved due to this method call, in previous iteration of loop
 ///    |
 /// note: this function takes ownership of the receiver `self`, which moves `it`
 ///   --> /home/user/hack/moveiter/src/asyn/finite.rs:78:24
 ///    |
-/// 78 |     async fn afmi_next(self) -> Option<(Self, Self::Item)>;
+/// 78 |     async fn next(self) -> Option<(Self, Self::Item)>;
 ///    |                        ^^^^
 /// ```
 #[async_trait]
@@ -86,10 +86,10 @@ pub trait AsyncFiniteMoveIterator: Sized + Send {
     /// # #[async_trait::async_trait]
     /// # trait T: Sized {
     /// # type Item;
-    /// async fn afmi_next(self) -> Option<(Self, Self::Item)>;
+    /// async fn next(self) -> Option<(Self, Self::Item)>;
     /// # }
     /// ```
-    async fn afmi_next(self) -> Option<(Self, Self::Item)>;
+    async fn next(self) -> Option<(Self, Self::Item)>;
 }
 
 #[async_trait]
@@ -99,7 +99,7 @@ where
 {
     type Item = I::Item;
 
-    async fn afmi_next(mut self) -> Option<(Self, Self::Item)> {
-        self.next().map(|item| (self, item))
+    async fn next(mut self) -> Option<(Self, Self::Item)> {
+        Iterator::next(&mut self).map(|item| (self, item))
     }
 }
