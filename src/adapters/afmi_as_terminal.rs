@@ -13,7 +13,7 @@ where
     type Terminal = ();
     type Item = <I as AsyncFiniteMoveIterator>::Item;
 
-    async fn into_next(mut self) -> Either<(Self, Self::Item), Self::Terminal> {
+    async fn into_next(self) -> Either<(Self, Self::Item), Self::Terminal> {
         use Either::{Left, Right};
 
         AsyncFiniteMoveIterator::into_next(self.0)
