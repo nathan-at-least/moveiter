@@ -2,7 +2,7 @@
 
 mod atmiadapter;
 
-pub use self::atmiadapter::ATMIAdapter;
+pub use self::atmiadapter::AfmiAsTerminal;
 use async_trait::async_trait;
 
 /// An `AsyncFiniteMoveIterator` type produces a sequence of 0 or more `Item` values asynchronously, using move semantics.
@@ -96,8 +96,8 @@ pub trait AsyncFiniteMoveIterator: Sized + Send {
     async fn into_next(self) -> Option<(Self, Self::Item)>;
 
     /// Adapt `self` into an [AsyncTerminalMoveIterator] with `Terminal = ()`.
-    fn into_async_terminal_move_iterator(self) -> ATMIAdapter<Self> {
-        ATMIAdapter(self)
+    fn into_async_terminal_move_iterator(self) -> AfmiAsTerminal<Self> {
+        AfmiAsTerminal(self)
     }
 }
 

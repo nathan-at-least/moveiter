@@ -2,10 +2,10 @@ use crate::{AsyncFiniteMoveIterator, AsyncTerminalMoveIterator};
 use async_trait::async_trait;
 use either::Either;
 
-pub struct ATMIAdapter<I>(pub(super) I);
+pub struct AfmiAsTerminal<I>(pub(super) I);
 
 #[async_trait]
-impl<I> AsyncTerminalMoveIterator for ATMIAdapter<I>
+impl<I> AsyncTerminalMoveIterator for AfmiAsTerminal<I>
 where
     I: AsyncFiniteMoveIterator,
 {
@@ -17,7 +17,7 @@ where
 
         AsyncFiniteMoveIterator::into_next(self.0)
             .await
-            .map(|(inner, x)| Left((ATMIAdapter(inner), x)))
+            .map(|(inner, x)| Left((AfmiAsTerminal(inner), x)))
             .unwrap_or(Right(()))
     }
 }

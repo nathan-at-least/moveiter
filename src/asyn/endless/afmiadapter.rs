@@ -1,0 +1,17 @@
+use crate::{AsyncEndlessMoveIterator, AsyncFiniteMoveIterator};
+use async_trait::async_trait;
+
+pub struct AemiAsFinite<I>(pub(super) I);
+
+#[async_trait]
+impl<I> AsyncFiniteMoveIterator for AemiAsFinite<I>
+where
+    I: AsyncEndlessMoveIterator,
+{
+    type Item = <I as AsyncEndlessMoveIterator>::Item;
+
+    async fn into_next(mut self) -> Option<(Self, Self::Item)> {
+        let (inner, x) = AsyncEndlessMoveIterator::into_next(self.0).await;
+        Some((AemiAsFinite(inner), x))
+    }
+}
