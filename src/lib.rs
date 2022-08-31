@@ -58,6 +58,7 @@
 //! Adaptation with [TerminalMoveIterator::into_async] which propagates `Terminal` type, whereas
 //! any other adaptation into a [TerminalMoveIterator] uses `()` as the `Terminal` type.
 mod asyn;
+pub(crate) mod optutil;
 mod syn;
 
 pub mod adapters;
