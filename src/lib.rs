@@ -55,8 +55,8 @@
 //! |                            | [into_async_terminal_move_iterator](AsyncEndlessMoveIterator::into_async_terminal_move_iterator) | [AsyncTerminalMoveIterator] |
 //! | [AsyncFiniteMoveIterator]  | [into_async_terminal_move_iterator](AsyncFiniteMoveIterator::into_async_terminal_move_iterator)  | [AsyncTerminalMoveIterator] |
 //!
-//! Any adaptation to a [TerminalMoveIterator] or [AsyncTerminalMoveIterator] uses `()` as the `Terminal` type _except_ for
-//! [TerminalMoveIterator::into_async] which propagates `Terminal` type.
+//! Adaptation with [TerminalMoveIterator::into_async] which propagates `Terminal` type, whereas
+//! any other adaptation into a [TerminalMoveIterator] uses `()` as the `Terminal` type.
 mod asyn;
 mod syn;
 
