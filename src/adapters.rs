@@ -8,6 +8,7 @@ mod aemi_as_terminal;
 mod afmi_as_terminal;
 mod emi_as_async;
 mod fmi_as_async;
+mod fmi_as_terminal;
 mod tmi_as_async;
 
 pub use self::aemi_as_finite::AemiAsFinite;
@@ -15,4 +16,5 @@ pub use self::aemi_as_terminal::AemiAsTerminal;
 pub use self::afmi_as_terminal::AfmiAsTerminal;
 pub use self::emi_as_async::EmiAsAsync;
 pub use self::fmi_as_async::FmiAsAsync;
+pub use self::fmi_as_terminal::FmiAsTerminal;
 pub use self::tmi_as_async::TmiAsAsync;

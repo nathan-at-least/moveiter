@@ -1,6 +1,6 @@
 //! The [FiniteMoveIterator] trait.
 
-use crate::adapters::FmiAsAsync;
+use crate::adapters::{FmiAsAsync, FmiAsTerminal};
 
 /// Produce a sequence of 0 or more `Item` values asynchronously, using move semantics.
 ///
@@ -13,6 +13,11 @@ pub trait FiniteMoveIterator: Sized {
     /// Convert into the `async` equivalent.
     fn into_async(self) -> FmiAsAsync<Self> {
         FmiAsAsync(self)
+    }
+
+    /// Convert into a value that impls [TerminalMoveIterator](crate::TerminalMoveIterator).
+    fn into_terminal_move_iterator(self) -> FmiAsTerminal<Self> {
+        FmiAsTerminal(self)
     }
 }
 
