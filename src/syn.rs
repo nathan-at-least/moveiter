@@ -6,4 +6,7 @@ mod terminal;
 
 pub use self::endless::EndlessMoveIterator;
 pub use self::finite::FiniteMoveIterator;
-pub use self::terminal::{terminal_move_iterator_from_result_iterator, TerminalMoveIterator};
+pub use self::terminal::{
+    terminal_move_iterator_from_result_iterator, terminal_move_iterator_into_result_iterator,
+    TerminalMoveIterator,
+};

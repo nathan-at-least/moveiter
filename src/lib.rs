@@ -68,6 +68,6 @@ pub use self::asyn::{
 };
 
 pub use self::syn::{
-    terminal_move_iterator_from_result_iterator, EndlessMoveIterator, FiniteMoveIterator,
-    TerminalMoveIterator,
+    terminal_move_iterator_from_result_iterator, terminal_move_iterator_into_result_iterator,
+    EndlessMoveIterator, FiniteMoveIterator, TerminalMoveIterator,
 };

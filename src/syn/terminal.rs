@@ -1,11 +1,13 @@
 //! The [TerminalMoveIterator] trait.
 
-mod resiter;
+mod from_res_iter;
+mod into_res_iter;
 
 use crate::adapters::TmiAsAsync;
 use either::Either;
 
-pub use self::resiter::terminal_move_iterator_from_result_iterator;
+pub use self::from_res_iter::terminal_move_iterator_from_result_iterator;
+pub use self::into_res_iter::terminal_move_iterator_into_result_iterator;
 
 /// Produce a sequence of 0 or more `Item` values asynchronously, then produce a `Terminal` value, using move semantics.
 pub trait TerminalMoveIterator: Sized {
