@@ -36,6 +36,30 @@
 //!
 //! This allows any interfaces that accept these generic bounds to take a [std::iter::Iterator]
 //! value seamlessly.
+//!
+//! # Adaptation
+//!
+//! Several of the traits provide default methods to adapt them to provide a related trait via a
+//! newtype wrapper. This helps consuming code and implementations to each tailor their semantics
+//! precisely yet still interoperate, where the result has coherent semantics:
+//!
+//! | Implemented Trait | Adaptation Method | Resulting Interface |
+//! |-------------------|-------------------|---------------------|
+//! | [EndlessMoveIterator]      | [into_finite_move_iterator](EndlessMoveIterator::into_finite_move_iterator)                      | [FiniteMoveIterator]        |
+//! |                            | [into_terminal_move_iterator](EndlessMoveIterator::into_terminal_move_iterator)                  | [TerminalMoveIterator]      |
+//! |                            | [into_async_endless_move_iterator](EndlessMoveIterator::into_async_endless_move_iterator)        | [AsyncEndlessMoveIterator]  |
+//! |                            | [into_async_finite_move_iterator](EndlessMoveIterator::into_async_finite_move_iterator)          | [AsyncFiniteMoveIterator]   |
+//! |                            | [into_async_terminal_move_iterator](EndlessMoveIterator::into_async_terminal_move_iterator)      | [AsyncTerminalMoveIterator] |
+//! | [FiniteMoveIterator]       | [into_terminal_move_iterator](FiniteMoveIterator::into_terminal_move_iterator)                   | [TerminalMoveIterator]      |
+//! |                            | [into_async_finite_move_iterator](FiniteMoveIterator::into_async_finite_move_iterator)           | [AsyncFiniteMoveIterator]   |
+//! |                            | [into_async_terminal_move_iterator](FiniteMoveIterator::into_async_terminal_move_iterator)       | [AsyncTerminalMoveIterator] |
+//! | [TerminalMoveIterator]     | [into_async_terminal_move_iterator](TerminalMoveIterator::into_async_terminal_move_iterator)     | [AsyncTerminalMoveIterator] |
+//! | [AsyncEndlessMoveIterator] | [into_async_finite_move_iterator](AsyncEndlessMoveIterator::into_async_finite_move_iterator)     | [AsyncFiniteMoveIterator]   |
+//! |                            | [into_async_terminal_move_iterator](AsyncEndlessMoveIterator::into_async_terminal_move_iterator) | [AsyncTerminalMoveIterator] |
+//! | [AsyncFiniteMoveIterator]  | [into_async_terminal_move_iterator](AsyncFiniteMoveIterator::into_async_terminal_move_iterator)  | [AsyncTerminalMoveIterator] |
+//!
+//! Any adaptation to a `*TerminalMoveIterator` uses `()` as the `Terminal` type _except_ for
+//! [TerminalMoveIterator::into_async_terminal_move_iterator] which propagates `Terminal` type.
 mod asyn;
 mod syn;
 
