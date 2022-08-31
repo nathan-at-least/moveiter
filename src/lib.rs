@@ -12,7 +12,7 @@
 //! This allows implementors and consumers to select the appropriate trait with fine-grained
 //! semantics.
 //!
-//! # At a Glance
+//! # Semantics At a Glance
 //!
 //! Each trait is based on a single provided `into_next` method:
 //!
@@ -81,6 +81,22 @@
 //!
 //! Adaptation with [TerminalMoveIterator::into_async] which propagates `Terminal` type, whereas
 //! any other adaptation into a [TerminalMoveIterator] uses `()` as the `Terminal` type.
+//!
+//! This provides only the minimal set of adaptations available between types, while the complete
+//! transitive set of adaptions is provided by chaining calls. For example, to convert from an
+//! [EndlessMoveIterator] into an [AsyncTerminalMoveIterator] chains two adaptations:
+//!
+//! ```
+//! use moveiter::{EndlessMoveIterator, AsyncTerminalMoveIterator};
+//!
+//! fn convert_emi_to_atmi<I>(emi: I) -> impl AsyncTerminalMoveIterator
+//!     where I: EndlessMoveIterator + Send + Sync,
+//! {
+//!     use moveiter::AsyncEndlessMoveIterator; // pull in the latter method.
+//!
+//!     emi.into_async().into_async_terminal_move_iterator()
+//! }
+//! ```
 mod asyn;
 pub(crate) mod optutil;
 mod syn;
