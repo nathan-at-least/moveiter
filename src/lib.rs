@@ -13,4 +13,4 @@ pub use self::asyn::{
     AsyncEndlessMoveIterator, AsyncFiniteMoveIterator, AsyncTerminalMoveIterator,
 };
 
-pub use self::syn::EndlessMoveIterator;
+pub use self::syn::{EndlessMoveIterator, FiniteMoveIterator};
