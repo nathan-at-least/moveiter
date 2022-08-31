@@ -2,8 +2,8 @@
 
 mod endless;
 mod finite;
-// mod terminal;
+mod terminal;
 
 pub use self::endless::EndlessMoveIterator;
 pub use self::finite::FiniteMoveIterator;
-// pub use self::terminal::TerminalMoveIterator;
+pub use self::terminal::TerminalMoveIterator;
