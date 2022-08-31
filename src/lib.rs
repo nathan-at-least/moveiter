@@ -5,9 +5,12 @@
 //! incorrect states during type checking avoiding the need for runtime safety mechanisms like
 //! [std::iter::FusedIterator].
 mod asyn;
+mod syn;
 
 pub mod adapters;
 
 pub use self::asyn::{
     AsyncEndlessMoveIterator, AsyncFiniteMoveIterator, AsyncTerminalMoveIterator,
 };
+
+pub use self::syn::EndlessMoveIterator;
