@@ -1,8 +1,6 @@
 //! The [AsyncFiniteMoveIterator] trait.
 
-mod atmiadapter;
-
-pub use self::atmiadapter::AfmiAsTerminal;
+use crate::adapters::AfmiAsTerminal;
 use async_trait::async_trait;
 
 /// Produce a sequence of 0 or more `Item` values asynchronously, using move semantics.

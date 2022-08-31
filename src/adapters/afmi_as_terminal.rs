@@ -3,7 +3,7 @@ use async_trait::async_trait;
 use either::Either;
 
 /// An adapter providing an [AsyncTerminalMoveIterator] impl for an [AsyncFiniteMoveIterator] value.
-pub struct AfmiAsTerminal<I>(pub(super) I);
+pub struct AfmiAsTerminal<I>(pub(crate) I);
 
 #[async_trait]
 impl<I> AsyncTerminalMoveIterator for AfmiAsTerminal<I>

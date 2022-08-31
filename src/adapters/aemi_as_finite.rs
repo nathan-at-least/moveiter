@@ -2,7 +2,7 @@ use crate::{AsyncEndlessMoveIterator, AsyncFiniteMoveIterator};
 use async_trait::async_trait;
 
 /// An adapter providing an [AsyncFiniteMoveIterator] impl for an [AsyncEndlessMoveIterator] value.
-pub struct AemiAsFinite<I>(pub(super) I);
+pub struct AemiAsFinite<I>(pub(crate) I);
 
 #[async_trait]
 impl<I> AsyncFiniteMoveIterator for AemiAsFinite<I>

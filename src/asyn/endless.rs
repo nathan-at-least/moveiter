@@ -1,12 +1,7 @@
 //! The [AsyncEndlessMoveIterator] trait.
 
-mod afmiadapter;
-mod atmiadapter;
-
+use crate::adapters::{AemiAsFinite, AemiAsTerminal};
 use async_trait::async_trait;
-
-pub use self::afmiadapter::AemiAsFinite;
-pub use self::atmiadapter::AemiAsTerminal;
 
 /// Produce an endless sequence of `Item` values asynchronously, using move semantics.
 ///

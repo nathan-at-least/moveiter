@@ -6,6 +6,8 @@
 //! [std::iter::FusedIterator].
 mod asyn;
 
+pub mod adapters;
+
 pub use self::asyn::{
     AsyncEndlessMoveIterator, AsyncFiniteMoveIterator, AsyncTerminalMoveIterator,
 };
