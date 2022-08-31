@@ -25,7 +25,12 @@
 //! | [AsyncFiniteMoveIterator]   | `async fn into_next(self) -> Option<(Self, Self::Item)>;`                 |
 //! | [AsyncTerminalMoveIterator] | `async fn into_next(self) -> Either<(Self, Self::Item), Self::Terminal>;` |
 //!
-//! # Blanket Implementations
+//! # Converting into/from [std::iter::Iterator].
+//!
+//! Each of the synchronous move iterator traits can potentially interact with
+//! [std::iter::Iterator] consumer code.
+//!
+//! ## Blanket Impls
 //!
 //! There are blanket impls of any [std::iter::Iterator] for any of the non-endless traits:
 //!
@@ -36,6 +41,25 @@
 //!
 //! This allows any interfaces that accept these generic bounds to take a [std::iter::Iterator]
 //! value seamlessly.
+//!
+//! ## Explicit Complete Conversions
+//!
+//! These traits methods always convert into a [std::iter::Iterator]:
+//!
+//! - [FiniteMoveIterator::into_iter]
+//! - [EndlessMoveIterator::into_iter]
+//!
+//! ## Conditional Conversions
+//!
+//! Conversions between [TerminalMoveIterator] and [std::iter::Iterator] are only provided when
+//! [Result] is involved in the former's `Terminal` type or the latter's `Item` type.
+//!
+//! In these cases, the [TerminalMoveIterator] has `Terminal = Result<(), E>` while the
+//! [std::iter::Iterator] has `Item = Result<T, E>`. The semantics are that an error terminates
+//! iteration.
+//!
+//! - [terminal_move_iterator_from_result_iterator]
+//! - [terminal_move_iterator_into_result_iterator]
 //!
 //! # Adaptation
 //!
