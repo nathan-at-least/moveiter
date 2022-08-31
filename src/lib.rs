@@ -45,15 +45,12 @@
 //!
 //! | Implemented Trait | Adaptation Method | Resulting Interface |
 //! |-------------------|-------------------|---------------------|
-//! | [EndlessMoveIterator]      | [into_finite_move_iterator](EndlessMoveIterator::into_finite_move_iterator)                      | [FiniteMoveIterator]        |
+//! | [EndlessMoveIterator]      | [into_async](EndlessMoveIterator::into_async)                                                    | [AsyncEndlessMoveIterator]  |
+//! |                            | [into_finite_move_iterator](EndlessMoveIterator::into_finite_move_iterator)                      | [FiniteMoveIterator]        |
 //! |                            | [into_terminal_move_iterator](EndlessMoveIterator::into_terminal_move_iterator)                  | [TerminalMoveIterator]      |
-//! |                            | [into_async_endless_move_iterator](EndlessMoveIterator::into_async_endless_move_iterator)        | [AsyncEndlessMoveIterator]  |
-//! |                            | [into_async_finite_move_iterator](EndlessMoveIterator::into_async_finite_move_iterator)          | [AsyncFiniteMoveIterator]   |
-//! |                            | [into_async_terminal_move_iterator](EndlessMoveIterator::into_async_terminal_move_iterator)      | [AsyncTerminalMoveIterator] |
-//! | [FiniteMoveIterator]       | [into_terminal_move_iterator](FiniteMoveIterator::into_terminal_move_iterator)                   | [TerminalMoveIterator]      |
-//! |                            | [into_async_finite_move_iterator](FiniteMoveIterator::into_async_finite_move_iterator)           | [AsyncFiniteMoveIterator]   |
-//! |                            | [into_async_terminal_move_iterator](FiniteMoveIterator::into_async_terminal_move_iterator)       | [AsyncTerminalMoveIterator] |
-//! | [TerminalMoveIterator]     | [into_async_terminal_move_iterator](TerminalMoveIterator::into_async_terminal_move_iterator)     | [AsyncTerminalMoveIterator] |
+//! | [FiniteMoveIterator]       | [into_async](FiniteMoveIterator::into_async)                                                     | [AsyncFiniteMoveIterator]   |
+//! |                            | [into_terminal_move_iterator](FiniteMoveIterator::into_terminal_move_iterator)                   | [TerminalMoveIterator]      |
+//! | [TerminalMoveIterator]     | [into_async](TerminalMoveIterator::into_async)                                                   | [AsyncTerminalMoveIterator] |
 //! | [AsyncEndlessMoveIterator] | [into_async_finite_move_iterator](AsyncEndlessMoveIterator::into_async_finite_move_iterator)     | [AsyncFiniteMoveIterator]   |
 //! |                            | [into_async_terminal_move_iterator](AsyncEndlessMoveIterator::into_async_terminal_move_iterator) | [AsyncTerminalMoveIterator] |
 //! | [AsyncFiniteMoveIterator]  | [into_async_terminal_move_iterator](AsyncFiniteMoveIterator::into_async_terminal_move_iterator)  | [AsyncTerminalMoveIterator] |
