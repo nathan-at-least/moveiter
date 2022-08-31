@@ -1,5 +1,6 @@
 //! The [TerminalMoveIterator] trait.
 
+use crate::adapters::TmiAsAsync;
 use either::Either;
 
 /// Produce a sequence of 0 or more `Item` values asynchronously, then produce a `Terminal` value, using move semantics.
@@ -10,6 +11,11 @@ pub trait TerminalMoveIterator: Sized {
     /// Iteration is async, moves `self`, and produces either a `(Self, Self::Item)` pair, or the
     /// `Self::Terminal` value.
     fn into_next(self) -> Either<(Self, Self::Item), Self::Terminal>;
+
+    /// Convert into the `async` equivalent.
+    fn into_async(self) -> TmiAsAsync<Self> {
+        TmiAsAsync(self)
+    }
 }
 
 impl<I> TerminalMoveIterator for I
