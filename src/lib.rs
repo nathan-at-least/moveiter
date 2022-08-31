@@ -7,5 +7,6 @@
 mod asyn;
 
 pub use self::asyn::{
-    AsyncEndlessMoveIterator, AsyncFiniteMoveIterator, AsyncTerminalMoveIterator,
+    AemiAsFinite, AemiAsTerminal, AfmiAsTerminal, AsyncEndlessMoveIterator,
+    AsyncFiniteMoveIterator, AsyncTerminalMoveIterator,
 };

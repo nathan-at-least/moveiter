@@ -95,7 +95,7 @@ pub trait AsyncFiniteMoveIterator: Sized + Send {
     /// ```
     async fn into_next(self) -> Option<(Self, Self::Item)>;
 
-    /// Adapt `self` into an [AsyncTerminalMoveIterator] with `Terminal = ()`.
+    /// Adapt `self` into an [AsyncTerminalMoveIterator](crate::AsyncTerminalMoveIterator) with `Terminal = ()`.
     fn into_async_terminal_move_iterator(self) -> AfmiAsTerminal<Self> {
         AfmiAsTerminal(self)
     }

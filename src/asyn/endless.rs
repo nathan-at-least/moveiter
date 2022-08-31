@@ -79,12 +79,12 @@ pub trait AsyncEndlessMoveIterator: Sized + Send {
     /// ```
     async fn into_next(self) -> (Self, Self::Item);
 
-    /// Adapt `self` into an [AsyncFiniteMoveIterator] which will never terminate.
+    /// Adapt `self` into an [AsyncFiniteMoveIterator](crate::AsyncFiniteMoveIterator) which will never terminate.
     fn into_async_finite_move_iterator(self) -> AemiAsFinite<Self> {
         AemiAsFinite(self)
     }
 
-    /// Adapt `self` into an [AsyncTerminalMoveIterator] which will never terminate.
+    /// Adapt `self` into an [AsyncTerminalMoveIterator](crate::AsyncTerminalMoveIterator) which will never terminate.
     fn into_async_terminal_move_iterator(self) -> AemiAsTerminal<Self> {
         AemiAsTerminal(self)
     }
