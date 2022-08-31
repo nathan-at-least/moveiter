@@ -67,4 +67,7 @@ pub use self::asyn::{
     AsyncEndlessMoveIterator, AsyncFiniteMoveIterator, AsyncTerminalMoveIterator,
 };
 
-pub use self::syn::{EndlessMoveIterator, FiniteMoveIterator, TerminalMoveIterator};
+pub use self::syn::{
+    terminal_move_iterator_from_result_iterator, EndlessMoveIterator, FiniteMoveIterator,
+    TerminalMoveIterator,
+};
