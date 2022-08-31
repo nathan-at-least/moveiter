@@ -4,5 +4,5 @@ mod finite;
 mod terminal;
 
 pub use self::endless::AsyncEndlessMoveIterator;
-pub use self::finite::AsyncFiniteMoveIterator;
+pub use self::finite::{ATMIAdapter, AsyncFiniteMoveIterator};
 pub use self::terminal::AsyncTerminalMoveIterator;
