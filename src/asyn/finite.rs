@@ -5,7 +5,7 @@ mod atmiadapter;
 pub use self::atmiadapter::AfmiAsTerminal;
 use async_trait::async_trait;
 
-/// An `AsyncFiniteMoveIterator` type produces a sequence of 0 or more `Item` values asynchronously, using move semantics.
+/// Produce a sequence of 0 or more `Item` values asynchronously, using move semantics.
 ///
 /// # `Iterator` Call-site Example
 ///

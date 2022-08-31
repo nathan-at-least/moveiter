@@ -2,7 +2,7 @@
 use async_trait::async_trait;
 use either::Either;
 
-/// An `AsyncTerminalMoveIterator` type produces a sequence of 0 or more `Item` values asynchronously, then produces a `Terminal` value, using move semantics.
+/// Produce a sequence of 0 or more `Item` values asynchronously, then produce a `Terminal` value, using move semantics.
 ///
 /// # `Iterator` Call-site Example
 ///

@@ -8,7 +8,7 @@ use async_trait::async_trait;
 pub use self::afmiadapter::AemiAsFinite;
 pub use self::atmiadapter::AemiAsTerminal;
 
-/// An `AsyncEndlessMoveIterator` type produces an endless sequence of `Item` values asynchronously, using move semantics.
+/// Produce an endless sequence of `Item` values asynchronously, using move semantics.
 ///
 /// # Example: Local `mut` call site:
 ///
