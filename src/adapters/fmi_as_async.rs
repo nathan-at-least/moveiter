@@ -1,7 +1,7 @@
 use crate::{AsyncFiniteMoveIterator, FiniteMoveIterator};
 use async_trait::async_trait;
 
-/// An adapter providing an [AsyncFiniteMoveIterator] impl for an [AsyncFiniteMoveIterator] value.
+/// An [AsyncFiniteMoveIterator] impl from [FiniteMoveIterator::into_async].
 pub struct FmiAsAsync<I>(pub(crate) I);
 
 #[async_trait]

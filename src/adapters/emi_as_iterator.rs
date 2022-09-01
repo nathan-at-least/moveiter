@@ -1,7 +1,7 @@
 use crate::optutil::OptionUpdate;
 use crate::EndlessMoveIterator;
 
-/// An adapter providing an [Iterator] impl for an [EndlessMoveIterator] value.
+/// An [Iterator] impl from [EndlessMoveIterator::into_iter].
 pub struct EmiAsIterator<I>(Option<I>);
 
 impl<I> EmiAsIterator<I> {

@@ -2,7 +2,7 @@ use crate::{AsyncFiniteMoveIterator, AsyncTerminalMoveIterator};
 use async_trait::async_trait;
 use either::Either;
 
-/// An adapter providing an [AsyncTerminalMoveIterator] impl for an [AsyncFiniteMoveIterator] value.
+/// An [AsyncTerminalMoveIterator] impl from [AsyncFiniteMoveIterator::into_async_terminal_move_iterator].
 pub struct AfmiAsTerminal<I>(pub(crate) I);
 
 #[async_trait]

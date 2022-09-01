@@ -1,7 +1,7 @@
 use crate::{AsyncEndlessMoveIterator, EndlessMoveIterator};
 use async_trait::async_trait;
 
-/// An adapter providing an [AsyncEndlessMoveIterator] impl for an [AsyncEndlessMoveIterator] value.
+/// An [AsyncEndlessMoveIterator] impl from [EndlessMoveIterator::into_async].
 pub struct EmiAsAsync<I>(pub(crate) I);
 
 #[async_trait]

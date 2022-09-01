@@ -1,7 +1,7 @@
 use crate::{EndlessMoveIterator, TerminalMoveIterator};
 use either::Either;
 
-/// An adapter providing an [TerminalMoveIterator] impl for an [EndlessMoveIterator] value.
+/// An [TerminalMoveIterator] impl from [EndlessMoveIterator::into_terminal_move_iterator].
 pub struct EmiAsTerminal<I>(pub(crate) I);
 
 impl<I> TerminalMoveIterator for EmiAsTerminal<I>

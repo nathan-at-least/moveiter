@@ -1,7 +1,7 @@
 use crate::{FiniteMoveIterator, TerminalMoveIterator};
 use either::Either;
 
-/// An adapter providing an [TerminalMoveIterator] impl for an [FiniteMoveIterator] value.
+/// An [TerminalMoveIterator] impl from [FiniteMoveIterator::into_terminal_move_iterator].
 pub struct FmiAsTerminal<I>(pub(crate) I);
 
 impl<I> TerminalMoveIterator for FmiAsTerminal<I>

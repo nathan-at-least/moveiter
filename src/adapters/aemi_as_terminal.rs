@@ -2,7 +2,7 @@ use crate::{AsyncEndlessMoveIterator, AsyncTerminalMoveIterator};
 use async_trait::async_trait;
 use either::Either;
 
-/// An adapter providing an [AsyncTerminalMoveIterator] impl for an [AsyncEndlessMoveIterator] value.
+/// An [AsyncTerminalMoveIterator] impl from [AsyncEndlessMoveIterator::into_async_terminal_move_iterator].
 pub struct AemiAsTerminal<I>(pub(crate) I);
 
 #[async_trait]

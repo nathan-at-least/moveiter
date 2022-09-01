@@ -1,6 +1,6 @@
 use crate::{EndlessMoveIterator, FiniteMoveIterator};
 
-/// An adapter providing an [FiniteMoveIterator] impl for an [EndlessMoveIterator] value.
+/// An [FiniteMoveIterator] impl from [EndlessMoveIterator::into_finite_move_iterator].
 pub struct EmiAsFinite<I>(pub(crate) I);
 
 impl<I> FiniteMoveIterator for EmiAsFinite<I>

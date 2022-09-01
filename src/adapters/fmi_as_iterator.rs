@@ -1,7 +1,7 @@
 use crate::optutil::OptionUpdate;
 use crate::FiniteMoveIterator;
 
-/// An adapter providing an [Iterator] impl for an [FiniteMoveIterator] value.
+/// An [Iterator] impl from [FiniteMoveIterator::into_iter].
 pub struct FmiAsIterator<I>(Option<I>);
 
 impl<I> FmiAsIterator<I> {
