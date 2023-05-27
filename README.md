@@ -19,9 +19,6 @@ a typed value as the final step. This leads to six traits:
 | Finite   | [FiniteMoveIterator]   | [AsyncFiniteMoveIterator]   |
 | Terminal | [TerminalMoveIterator] | [AsyncTerminalMoveIterator] |
 
-This allows implementors and consumers to select the appropriate trait with fine-grained
-semantics.
-
 # Semantics At a Glance
 
 Each trait is based on a single provided `into_next` method:
@@ -35,38 +32,56 @@ Each trait is based on a single provided `into_next` method:
 | [AsyncFiniteMoveIterator]   | `async fn into_next(self) -> Option<(Self, Self::Item)>;`                 |
 | [AsyncTerminalMoveIterator] | `async fn into_next(self) -> Either<(Self, Self::Item), Self::Terminal>;` |
 
-# Converting into/from [std::iter::Iterator].
+# Producer/Consumer Precision
+
+This family allows producing and consuming code to more precisely express semantics in
+the type system. For example, a bigint sequence of all natural numbers could implement
+`EndlessMoveIterator`, and a program which processes an asynchronous stream of child
+process outputs and expects the child exit status as a terminal value would consume an
+`AsyncTerminalMoveIterator`.
+
+# Conversions
+
+Producers and consumers may often have different iteration semantics, so this crate provides
+conversions through blanket impls or *adapter* types.
+
+## Converting into/from [std::iter::Iterator].
 
 Each of the synchronous move iterator traits can potentially interact with
-[std::iter::Iterator] consumer code.
+[std::iter::Iterator] consumer code:
 
-## Blanket Impls
+### Blanket Impls
 
 There are blanket impls of any [std::iter::Iterator] for any of the non-endless traits:
 
 - [FiniteMoveIterator]
-- [TerminalMoveIterator]
+- [TerminalMoveIterator] with `Terminal = ()`
 - [AsyncFiniteMoveIterator]
-- [AsyncTerminalMoveIterator]
+- [AsyncTerminalMoveIterator] with `Terminal = ()`
 
 This allows any interfaces that accept these generic bounds to take a [std::iter::Iterator]
 value seamlessly.
 
-## Explicit Complete Conversions
+### Explicit Complete Conversions
 
 These traits methods always convert into a [std::iter::Iterator]:
 
 - [FiniteMoveIterator::into_iter]
 - [EndlessMoveIterator::into_iter]
 
-## Conditional Conversions
+### Result Items/Terminators
 
 Conversions between [TerminalMoveIterator] and [std::iter::Iterator] are only provided when
-[Result] is involved in the former's `Terminal` type or the latter's `Item` type.
+[Result] is involved to capture a common pattern:
 
-In these cases, the [TerminalMoveIterator] has `Terminal = Result<(), E>` while the
-[std::iter::Iterator] has `Item = Result<T, E>`. The semantics are that an error terminates
-iteration.
+Often [std::iter::Iterator] types have an [Result] with the untyped semantic
+convention that the first `Err` item aborts iteration. By contrast to this convention, terminal
+iterators can make this explicit in the type system:
+
+- Result-item convention: `impl Iterator<Item = Result<T, E>>`
+- Terminal type: `impl TerminalMoveIterator<Item = T, Terminal = Result<(), E>>`
+
+Converting between these is provided by these functions:
 
 - [terminal_move_iterator_from_result_iterator]
 - [terminal_move_iterator_into_result_iterator]
