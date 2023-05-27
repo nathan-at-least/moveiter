@@ -1,0 +1,63 @@
+on: [push, pull_request]
+
+name: cargo-checkmate Continuous Integration
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - run: cargo install cargo-checkmate
+      - name: Install cargo-checkmate
+        uses: baptiste0928/cargo-install@v2
+        with:
+          crate: cargo-checkmate
+          version: "^0.1.14"
+
+  audit:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - run: cargo-checkmate audit
+
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - run: cargo-checkmate build
+
+  check:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - run: cargo-checkmate check
+
+  clippy:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - run: cargo-checkmate clippy
+
+  doc:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - run: cargo-checkmate doc
+
+  format:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - run: cargo-checkmate format
+
+  test:
+    needs: setup
+      runs-on: ubuntu-latest
+    steps:
+      - run: cargo-checkmate test
