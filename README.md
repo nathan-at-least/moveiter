@@ -1,13 +1,23 @@
 A family of iteration traits which use move semantics.
 
+# Move Semantics
+
 Move semantics consume an iterator, and if there is a next item, a new iterator is returned
 with the item, whereas when iteration completes, no new iterator is available. This prevents
 incorrect states during type checking avoiding the need for runtime safety mechanisms like
 [std::iter::FusedIterator].
 
-There are two axes defining the trait family: sync/async and the kind of
+# The Trait Family
+
+There is a trait family based on two semantic axes: sync/async and the kind of
 termination. Termination can be "endless", "finite", or "terminal", where "terminal" produces
-a typed value as the final step. This leads to six traits.
+a typed value as the final step. This leads to six traits:
+
+|          | Sync                   | Async                       |
+|----------|------------------------|-----------------------------|
+| Endless  | [EndlessMoveIterator]  | [AsyncEndlessMoveIterator]  |
+| Finite   | [FiniteMoveIterator]   | [AsyncFiniteMoveIterator]   |
+| Terminal | [TerminalMoveIterator] | [AsyncTerminalMoveIterator] |
 
 This allows implementors and consumers to select the appropriate trait with fine-grained
 semantics.
