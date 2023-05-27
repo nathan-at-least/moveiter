@@ -58,6 +58,6 @@ jobs:
 
   test:
     needs: setup
-      runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - run: cargo-checkmate test
